@@ -3,11 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:mytodo/src/view/home.dart';
+import 'package:mytodo/src/view/home_view.dart';
 
 void main() => runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Home(),
+        home: HomeView(),
       ),
     );

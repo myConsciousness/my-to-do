@@ -4,16 +4,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
-import 'package:mytodo/src/view/common/drawer.dart';
+import 'package:mytodo/src/view/common/drawer_view.dart';
 
-class History extends StatefulWidget {
+class HistoryView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _State();
   }
 }
 
-class _State extends State<History> {
+class _State extends State<HistoryView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

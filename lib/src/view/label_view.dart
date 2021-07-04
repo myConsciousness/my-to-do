@@ -4,16 +4,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
-import 'package:mytodo/src/view/common/drawer.dart';
+import 'package:mytodo/src/view/common/drawer_view.dart';
 
-class Home extends StatefulWidget {
+class LabelView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _State();
   }
 }
 
-class _State extends State<Home> {
+class _State extends State<LabelView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

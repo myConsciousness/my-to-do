@@ -4,10 +4,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
-import 'package:mytodo/src/view/history.dart';
-import 'package:mytodo/src/view/home.dart';
-
-import '../../../main.dart';
+import 'package:mytodo/src/view/history_view.dart';
+import 'package:mytodo/src/view/home_view.dart';
+import 'package:mytodo/src/view/label_view.dart';
+import 'package:mytodo/src/view/setting_view.dart';
 
 class CommonDrawer extends StatefulWidget {
   @override
@@ -41,7 +41,7 @@ class _State extends State<CommonDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Home(),
+                    builder: (context) => HomeView(),
                   ));
             },
           ),
@@ -49,20 +49,24 @@ class _State extends State<CommonDrawer> {
             title: Text('History'),
             onTap: () {
               Navigator.pop(context);
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => History()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => HistoryView()));
             },
           ),
           ListTile(
             title: Text('Label'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LabelView()));
             },
           ),
           ListTile(
             title: Text('Setting'),
             onTap: () {
               Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingView()));
             },
           ),
         ],
