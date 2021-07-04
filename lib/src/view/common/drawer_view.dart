@@ -17,6 +17,18 @@ class CommonDrawer extends StatefulWidget {
 }
 
 class _State extends State<CommonDrawer> {
+  /// The title of home
+  final String _TITLE_HOME = 'Home';
+
+  /// The title of history
+  final String _TITLE_HISTORY = 'History';
+
+  /// The title of label
+  final String _TITLE_LABEL = 'Label';
+
+  /// The title of setting
+  final String _TITLE_SETTING = 'Setting';
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -35,7 +47,7 @@ class _State extends State<CommonDrawer> {
             ),
           ),
           ListTile(
-            title: Text('Home'),
+            title: Text(this._TITLE_HOME),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(
@@ -46,7 +58,7 @@ class _State extends State<CommonDrawer> {
             },
           ),
           ListTile(
-            title: Text('History'),
+            title: Text(this._TITLE_HISTORY),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context,
@@ -54,7 +66,7 @@ class _State extends State<CommonDrawer> {
             },
           ),
           ListTile(
-            title: Text('Label'),
+            title: Text(this._TITLE_LABEL),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context,
@@ -62,7 +74,7 @@ class _State extends State<CommonDrawer> {
             },
           ),
           ListTile(
-            title: Text('Setting'),
+            title: Text(this._TITLE_SETTING),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context,

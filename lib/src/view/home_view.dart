@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:mytodo/src/command/command_exporter.dart';
 import 'package:mytodo/src/config/application_text.dart';
 import 'package:mytodo/src/view/common/drawer_view.dart';
 
@@ -17,11 +18,11 @@ class _State extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(ApplicationText.APP_NAME),
-      ),
-      drawer: CommonDrawer(),
-      body: Text('Test'),
-    );
+        appBar: AppBar(
+          title: Text(ApplicationText.APP_NAME),
+        ),
+        drawer: CommonDrawer(),
+        body: ListView(
+            children: Command.of(CommandType.GET_LATEST_TODO_LIST).execute()));
   }
 }
