@@ -7,7 +7,10 @@ import 'package:mytodo/src/command/get_latest_todo_list_command.dart';
 abstract class Command {
   /// Returns the command instance linked to the [commandType].
   factory Command.of(CommandType commandType) {
-    return GetLatestTodoListCommand.newInstance();
+    switch (commandType) {
+      case CommandType.GET_LATEST_TODO_LIST:
+        return GetLatestTodoListCommand.newInstance();
+    }
   }
 
   /// Executes the command and returns the result.
