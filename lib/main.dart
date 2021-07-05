@@ -5,12 +5,14 @@
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
 import 'package:mytodo/src/view/history_view.dart';
-import 'package:mytodo/src/view/home_view.dart';
+import 'package:mytodo/src/view/label_view.dart';
 import 'package:mytodo/src/view/setting_view.dart';
+import 'package:mytodo/src/view/tag_view.dart';
+import 'package:mytodo/src/view/todo_list_view.dart';
 
-void main() => runApp(Main());
+void main() => runApp(MyToDo());
 
-class Main extends StatelessWidget {
+class MyToDo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,9 +34,9 @@ class Main extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              HomeView(),
-              HistoryView(),
-              HistoryView(),
+              TodoListView(),
+              LabelView(),
+              TagView(),
               HistoryView(),
               SettingView(),
             ],

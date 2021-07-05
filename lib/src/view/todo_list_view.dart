@@ -4,22 +4,31 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command_exporter.dart';
-import 'package:mytodo/src/config/application_text.dart';
 import 'package:mytodo/src/view/common/drawer_view.dart';
 
-class HomeView extends StatefulWidget {
+class TodoListView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _State();
   }
 }
 
-class _State extends State<HomeView> {
+class _State extends State<TodoListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(ApplicationText.APP_NAME),
+          title: Text('ToDo List'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.add),
+              tooltip: 'New ToDo',
+              onPressed: () {
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(content: Text('Added!')));
+              },
+            )
+          ],
         ),
         drawer: CommonDrawer(),
         body: ListView(

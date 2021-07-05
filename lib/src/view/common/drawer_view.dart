@@ -5,7 +5,6 @@
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
 import 'package:mytodo/src/view/history_view.dart';
-import 'package:mytodo/src/view/home_view.dart';
 import 'package:mytodo/src/view/label_view.dart';
 import 'package:mytodo/src/view/setting_view.dart';
 
@@ -53,7 +52,7 @@ class _State extends State<CommonDrawer> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => HomeView(),
+                    builder: (context) => ListView(),
                   ));
             },
           ),

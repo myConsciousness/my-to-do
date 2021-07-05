@@ -10,38 +10,40 @@ class GetLatestTodoListCommand implements Command {
   GetLatestTodoListCommand.newInstance();
 
   @override
-  List<Widget> execute() {
-    return <Widget>[
-      Container(
-          decoration: new BoxDecoration(
-            border: new Border(
-              bottom: new BorderSide(color: Colors.black),
+  List<Card> execute() {
+    return <Card>[
+      Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            const ListTile(
+              leading: Icon(Icons.priority_high),
+              title: Text('Buy something'),
+              subtitle: Text('This is a test remarks.'),
             ),
-          ),
-          child: ListTile(
-            leading: Icon(Icons.map),
-            title: Text('Map'),
-          )),
-      Container(
-          decoration: new BoxDecoration(
-            border: new Border(
-              bottom: new BorderSide(color: Colors.black),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                TextButton(
+                  child: const Text('Edit'),
+                  onPressed: () {/* ... */},
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  child: const Text('Complete'),
+                  onPressed: () {/* ... */},
+                ),
+                const SizedBox(width: 8),
+                TextButton(
+                  child: const Text('Delete'),
+                  onPressed: () {/* ... */},
+                ),
+                const SizedBox(width: 8),
+              ],
             ),
-          ),
-          child: ListTile(
-            leading: Icon(Icons.photo_album),
-            title: Text('Album'),
-          )),
-      Container(
-          decoration: new BoxDecoration(
-            border: new Border(
-              bottom: new BorderSide(color: Colors.black),
-            ),
-          ),
-          child: ListTile(
-            leading: Icon(Icons.phone),
-            title: Text('Phone'),
-          )),
+          ],
+        ),
+      )
     ];
   }
 }
