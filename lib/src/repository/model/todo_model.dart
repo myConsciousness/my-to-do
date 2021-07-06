@@ -10,6 +10,9 @@ class Todo {
   /// The name
   String name;
 
+  /// The remarks
+  String remarks;
+
   /// The tag
   String tag;
 
@@ -32,6 +35,7 @@ class Todo {
   Todo.from(
       {required this.id,
       required this.name,
+      required this.remarks,
       required this.tag,
       required this.priority,
       required this.deadline,
@@ -43,6 +47,7 @@ class Todo {
   Todo.fromJson(Map json)
       : this.id = json[_ColumnName.NAME],
         this.name = json[_ColumnName.NAME],
+        this.remarks = json[_ColumnName.REMARKS],
         this.tag = json[_ColumnName.TAG],
         this.priority = json[_ColumnName.PRIORITY],
         this.deadline = json[_ColumnName.DEADLINE],
@@ -55,6 +60,7 @@ class Todo {
     var map = Map<String, dynamic>();
     map[_ColumnName.ID] = this.id;
     map[_ColumnName.NAME] = this.name;
+    map[_ColumnName.REMARKS] = this.remarks;
     map[_ColumnName.TAG] = this.tag;
     map[_ColumnName.PRIORITY] = this.priority;
     map[_ColumnName.DEADLINE] = this.deadline;
@@ -73,6 +79,9 @@ class _ColumnName {
 
   /// The name
   static const String NAME = 'name';
+
+  /// The remarks
+  static const String REMARKS = 'remarks';
 
   /// The tag
   static const String TAG = 'tag';

@@ -16,6 +16,7 @@ class TodoRepository extends MytodoDatabaseProvider {
           CREATE TABLE $tableName(
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             NAME TEXT,
+            REMARKS TEXT,
             TAG TEXT,
             PRIORITY INTEGER,
             DEADLINE DATETIME,
