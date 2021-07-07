@@ -29,6 +29,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   sqflite: ^2.0.0+3
   settings_ui: ^1.0.0
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
