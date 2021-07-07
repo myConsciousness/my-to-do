@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command_exporter.dart';
+import 'package:mytodo/src/repository/model/todo_model.dart';
+import 'package:mytodo/src/repository/todo_repository.dart';
 
 class TodoListView extends StatefulWidget {
   @override
@@ -24,6 +26,16 @@ class _State extends State<TodoListView> {
               icon: const Icon(Icons.add),
               tooltip: 'New ToDo',
               onPressed: () {
+                TodoRepository().insert(Todo.from(
+                    name: 'testName',
+                    remarks: 'testRemarks',
+                    tag: 'test tag',
+                    priority: 0,
+                    deadline: DateTime(0),
+                    deleted: false,
+                    completed: false,
+                    completedAt: DateTime(0)));
+
                 ScaffoldMessenger.of(context)
                     .showSnackBar(const SnackBar(content: Text('Added!')));
               },

@@ -17,7 +17,7 @@ class Todo {
   String tag;
 
   /// The priority
-  String priority;
+  int priority;
 
   /// The deadline
   DateTime deadline;
@@ -31,9 +31,24 @@ class Todo {
   /// The completed datetime
   DateTime completedAt;
 
+  /// The flag that represents if this model is exist
+  bool _empty = false;
+
+  Todo.empty()
+      : this._empty = true,
+        this.id = 0,
+        this.name = '',
+        this.remarks = '',
+        this.tag = '',
+        this.priority = 0,
+        this.deadline = DateTime(0),
+        this.deleted = false,
+        this.completed = false,
+        this.completedAt = DateTime(0);
+
   /// Returns the new instance of [Todo] based on the parameters.
   Todo.from(
-      {required this.id,
+      {this.id = 0,
       required this.name,
       required this.remarks,
       required this.tag,
@@ -43,17 +58,17 @@ class Todo {
       required this.completed,
       required this.completedAt});
 
-  /// Returns the new instance of [Todo] based on the [json] parameter.
-  Todo.fromJson(Map json)
-      : this.id = json[_ColumnName.NAME],
-        this.name = json[_ColumnName.NAME],
-        this.remarks = json[_ColumnName.REMARKS],
-        this.tag = json[_ColumnName.TAG],
-        this.priority = json[_ColumnName.PRIORITY],
-        this.deadline = json[_ColumnName.DEADLINE],
-        this.deleted = json[_ColumnName.DELETED],
-        this.completed = json[_ColumnName.COMPLETED],
-        this.completedAt = json[_ColumnName.COMPLETED_AT];
+  /// Returns the new instance of [Todo] based on the [map] passed as an argument.
+  factory Todo.fromMap(Map<String, dynamic> map) => Todo.from(
+      id: map[_ColumnName.ID],
+      name: map[_ColumnName.NAME],
+      remarks: map[_ColumnName.REMARKS],
+      tag: map[_ColumnName.TAG],
+      priority: map[_ColumnName.PRIORITY],
+      deadline: map[_ColumnName.DEADLINE],
+      deleted: map[_ColumnName.DELETED],
+      completed: map[_ColumnName.COMPLETED],
+      completedAt: map[_ColumnName.COMPLETED_AT]);
 
   /// Returns this [Todo] model as [Map].
   Map<String, dynamic> toMap() {
@@ -69,6 +84,11 @@ class Todo {
     map[_ColumnName.COMPLETED_AT] = this.completedAt;
 
     return map;
+  }
+
+  /// Returns [true] if this model is empty, otherwise [false].
+  bool isEmpty() {
+    return this._empty;
   }
 }
 

@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command.dart';
+import 'package:mytodo/src/repository/model/todo_model.dart';
+import 'package:mytodo/src/repository/todo_repository.dart';
 
 class GetLatestTodoListCommand implements Command {
   /// The constructor.
@@ -14,36 +16,43 @@ class GetLatestTodoListCommand implements Command {
     return <Card>[
       Card(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            const ListTile(
-              leading: Icon(Icons.priority_high),
-              title: Text('Buy something'),
-              subtitle: Text('This is a test remarks.'),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                TextButton(
-                  child: const Text('Edit'),
-                  onPressed: () {/* ... */},
-                ),
-                const SizedBox(width: 8),
-                TextButton(
-                  child: const Text('Complete'),
-                  onPressed: () {/* ... */},
-                ),
-                const SizedBox(width: 8),
-                TextButton(
-                  child: const Text('Delete'),
-                  onPressed: () {/* ... */},
-                ),
-                const SizedBox(width: 8),
-              ],
-            ),
-          ],
-        ),
+            mainAxisSize: MainAxisSize.min, children: this._buildTodoList()),
       )
     ];
+  }
+
+  List<Widget> _buildTodoList() {
+    final List<Widget> todoList = <Widget>[];
+
+    TodoRepository().findAll().then((List<Todo> v) => v.forEach((Todo todo) {
+          todoList.add(ListTile(
+            leading: Icon(Icons.priority_high),
+            title: Text(todo.name),
+            subtitle: Text(todo.remarks),
+          ));
+
+          todoList.add(Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              TextButton(
+                child: const Text('Edit'),
+                onPressed: () {/* ... */},
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                child: const Text('Complete'),
+                onPressed: () {/* ... */},
+              ),
+              const SizedBox(width: 8),
+              TextButton(
+                child: const Text('Delete'),
+                onPressed: () {/* ... */},
+              ),
+              const SizedBox(width: 8),
+            ],
+          ));
+        }));
+
+    return todoList;
   }
 }

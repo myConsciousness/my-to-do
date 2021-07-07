@@ -2,28 +2,45 @@
 // Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:mytodo/src/repository/database_provider.dart';
-import 'package:sqflite_common/sqlite_api.dart';
+import 'package:mytodo/src/config/table_names.dart';
+import 'package:mytodo/src/repository/model/todo_model.dart';
+import 'package:mytodo/src/repository/repository.dart';
+import 'package:sqflite/sqflite.dart';
 
-/// The class that manages [TODO] repository.
-class TodoRepository extends MytodoDatabaseProvider {
+class TodoRepository extends Repository<Todo> {
   @override
-  String get tableName => 'TODO';
+  String get table => TableNames.TODO;
 
   @override
-  createDatabase(Database database, int version) => database.execute(
-        """
-          CREATE TABLE $tableName(
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            NAME TEXT,
-            REMARKS TEXT,
-            TAG TEXT,
-            PRIORITY INTEGER,
-            DEADLINE DATETIME,
-            DELETED BOOLEAN,
-            COMPLETED BOOLEAN,
-            COMPLETED_AT DATETIME
-          )
-        """,
-      );
+  Future<List<Todo>> findAll() async {
+    return await super.database.then((Database v) => v.query(table).then(
+        (List<Map<String, Object?>> v) =>
+            v.map((Map<String, Object?> e) => Todo.fromMap(e)).toList()));
+  }
+
+  @override
+  Future<Todo> findById(int id) async {
+    return await super.database.then((Database database) => database
+        .query(table, where: 'ID = ?', whereArgs: [id]).then(
+            (v) => v.isNotEmpty ? Todo.fromMap(v[0]) : Todo.empty()));
+  }
+
+  @override
+  Future<Todo> insert(Todo todo) async {
+    await super.database.then((Database v) =>
+        v.insert(table, todo.toMap()).then((int v) => todo.id = v));
+    return todo;
+  }
+
+  @override
+  void update(Todo todo) async {
+    await super.database.then((Database database) => database
+        .update(table, todo.toMap(), where: 'ID = ?', whereArgs: [todo.id]));
+  }
+
+  @override
+  void delete(Todo todo) async {
+    await super.database.then((Database database) =>
+        database.delete(table, where: 'ID = ?', whereArgs: [todo.id]));
+  }
 }
