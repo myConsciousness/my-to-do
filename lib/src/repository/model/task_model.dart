@@ -2,8 +2,8 @@
 // Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// The entity class that manages the [TODO] model.
-class Todo {
+/// The entity class that manages the [TASK] model.
+class Task {
   ///  The id
   int id;
 
@@ -34,7 +34,8 @@ class Todo {
   /// The flag that represents if this model is exist
   bool _empty = false;
 
-  Todo.empty()
+  /// Returns the empty instance of [Task].
+  Task.empty()
       : this._empty = true,
         this.id = 0,
         this.name = '',
@@ -47,7 +48,7 @@ class Todo {
         this.completedAt = DateTime(0);
 
   /// Returns the new instance of [Todo] based on the parameters.
-  Todo.from(
+  Task.from(
       {this.id = 0,
       required this.name,
       required this.remarks,
@@ -59,7 +60,7 @@ class Todo {
       required this.completedAt});
 
   /// Returns the new instance of [Todo] based on the [map] passed as an argument.
-  factory Todo.fromMap(Map<String, dynamic> map) => Todo.from(
+  factory Task.fromMap(Map<String, dynamic> map) => Task.from(
       id: map[_ColumnName.ID],
       name: map[_ColumnName.NAME],
       remarks: map[_ColumnName.REMARKS],

@@ -4,12 +4,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command.dart';
-import 'package:mytodo/src/repository/model/todo_model.dart';
-import 'package:mytodo/src/repository/todo_repository.dart';
+import 'package:mytodo/src/repository/model/task_model.dart';
+import 'package:mytodo/src/repository/task_repository.dart';
 
-class GetLatestTodoListCommand implements Command {
+class GetLatestTaskListCommand implements Command {
   /// The constructor.
-  GetLatestTodoListCommand.newInstance();
+  GetLatestTaskListCommand.newInstance();
 
   @override
   List<Card> execute() {
@@ -30,14 +30,14 @@ class GetLatestTodoListCommand implements Command {
     ];
   }
 
-  List<Widget> _buildTaskList(List<Todo> todos) {
+  List<Widget> _buildTaskList(List<Task> tasks) {
     final List<Widget> taskList = <Widget>[];
 
-    for (Todo todo in todos) {
+    for (Task task in tasks) {
       taskList.add(ListTile(
         leading: Icon(Icons.priority_high),
-        title: Text(todo.id.toString()),
-        subtitle: Text(todo.remarks),
+        title: Text(task.name),
+        subtitle: Text(task.remarks),
       ));
       taskList
           .add(Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[

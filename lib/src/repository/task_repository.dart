@@ -3,46 +3,46 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:mytodo/src/config/table_names.dart';
-import 'package:mytodo/src/repository/model/todo_model.dart';
+import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class TodoRepository extends Repository<Todo> {
+class TodoRepository extends Repository<Task> {
   @override
-  String get table => TableNames.TODO;
+  String get table => TableNames.TASK;
 
   @override
-  Future<List<Todo>> findAll() async {
+  Future<List<Task>> findAll() async {
     return await super.database.then((Database v) => v.query(table).then(
         (List<Map<String, Object?>> v) => v
             .map((Map<String, Object?> e) =>
-                e.isNotEmpty ? Todo.fromMap(e) : Todo.empty())
+                e.isNotEmpty ? Task.fromMap(e) : Task.empty())
             .toList()));
   }
 
   @override
-  Future<Todo> findById(int id) async {
+  Future<Task> findById(int id) async {
     return await super.database.then((Database database) => database
         .query(table, where: 'ID = ?', whereArgs: [id]).then(
-            (v) => v.isNotEmpty ? Todo.fromMap(v[0]) : Todo.empty()));
+            (v) => v.isNotEmpty ? Task.fromMap(v[0]) : Task.empty()));
   }
 
   @override
-  Future<Todo> insert(Todo todo) async {
+  Future<Task> insert(Task task) async {
     await super.database.then((Database v) =>
-        v.insert(table, todo.toMap()).then((int v) => todo.id = v));
-    return todo;
+        v.insert(table, task.toMap()).then((int v) => task.id = v));
+    return task;
   }
 
   @override
-  void update(Todo todo) async {
+  void update(Task task) async {
     await super.database.then((Database database) => database
-        .update(table, todo.toMap(), where: 'ID = ?', whereArgs: [todo.id]));
+        .update(table, task.toMap(), where: 'ID = ?', whereArgs: [task.id]));
   }
 
   @override
-  void delete(Todo todo) async {
+  void delete(Task task) async {
     await super.database.then((Database database) =>
-        database.delete(table, where: 'ID = ?', whereArgs: [todo.id]));
+        database.delete(table, where: 'ID = ?', whereArgs: [task.id]));
   }
 }

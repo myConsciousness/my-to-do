@@ -4,6 +4,6 @@
 
 /// The class that manages table names.
 class TableNames {
-  /// The todo table
-  static const String TODO = 'TODO';
+  /// The task table
+  static const String TASK = 'TASK';
 }

@@ -4,29 +4,29 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command_exporter.dart';
-import 'package:mytodo/src/repository/model/todo_model.dart';
-import 'package:mytodo/src/repository/todo_repository.dart';
+import 'package:mytodo/src/repository/model/task_model.dart';
+import 'package:mytodo/src/repository/task_repository.dart';
 
-class TodoListView extends StatefulWidget {
+class TaskListView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _State();
   }
 }
 
-class _State extends State<TodoListView> {
+class _State extends State<TaskListView> {
   TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('ToDo List'),
+          title: Text('Task List'),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.add),
-              tooltip: 'New ToDo',
+              tooltip: 'New Task',
               onPressed: () {
-                TodoRepository().insert(Todo.from(
+                TodoRepository().insert(Task.from(
                     name: 'testName',
                     remarks: 'testRemarks',
                     tag: 'test tag',

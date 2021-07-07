@@ -5,8 +5,8 @@
 /// The class that manages table defintiions.
 class TableDefinitions {
   /// The Todo table
-  static const String TODO = '''
-          CREATE TABLE TODO (
+  static const String TASK = '''
+          CREATE TABLE TASK (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             NAME TEXT,
             REMARKS TEXT,

@@ -34,7 +34,7 @@ class DatabaseProvider {
         _DATABASE_NAME,
       ),
       onCreate: (Database database, int version) async {
-        await database.execute(TableDefinitions.TODO);
+        await database.execute(TableDefinitions.TASK);
       },
       onUpgrade: (Database db, int oldVersion, int newVersion) async {
         // Do nothing now

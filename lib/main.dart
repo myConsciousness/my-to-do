@@ -8,7 +8,7 @@ import 'package:mytodo/src/view/history_view.dart';
 import 'package:mytodo/src/view/label_view.dart';
 import 'package:mytodo/src/view/setting_view.dart';
 import 'package:mytodo/src/view/tag_view.dart';
-import 'package:mytodo/src/view/todo_list_view.dart';
+import 'package:mytodo/src/view/task_list_view.dart';
 
 void main() => runApp(MyToDo());
 
@@ -34,7 +34,7 @@ class MyToDo extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              TodoListView(),
+              TaskListView(),
               LabelView(),
               TagView(),
               HistoryView(),
