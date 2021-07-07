@@ -65,23 +65,23 @@ class Todo {
       remarks: map[_ColumnName.REMARKS],
       tag: map[_ColumnName.TAG],
       priority: map[_ColumnName.PRIORITY],
-      deadline: map[_ColumnName.DEADLINE],
-      deleted: map[_ColumnName.DELETED],
-      completed: map[_ColumnName.COMPLETED],
-      completedAt: map[_ColumnName.COMPLETED_AT]);
+      deadline: DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.DEADLINE]),
+      deleted: map[_ColumnName.DELETED] == 1,
+      completed: map[_ColumnName.COMPLETED] == 1,
+      completedAt:
+          DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.COMPLETED_AT]));
 
   /// Returns this [Todo] model as [Map].
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    map[_ColumnName.ID] = this.id;
     map[_ColumnName.NAME] = this.name;
     map[_ColumnName.REMARKS] = this.remarks;
     map[_ColumnName.TAG] = this.tag;
     map[_ColumnName.PRIORITY] = this.priority;
-    map[_ColumnName.DEADLINE] = this.deadline;
-    map[_ColumnName.DELETED] = this.deleted;
-    map[_ColumnName.COMPLETED] = this.completed;
-    map[_ColumnName.COMPLETED_AT] = this.completedAt;
+    map[_ColumnName.DEADLINE] = this.deadline.millisecondsSinceEpoch;
+    map[_ColumnName.DELETED] = this.deleted ? 1 : 0;
+    map[_ColumnName.COMPLETED] = this.completed ? 1 : 0;
+    map[_ColumnName.COMPLETED_AT] = this.completedAt.millisecondsSinceEpoch;
 
     return map;
   }
@@ -95,29 +95,29 @@ class Todo {
 /// The internal const class that manages the column name of [TODO] repository.
 class _ColumnName {
   /// The id
-  static const String ID = 'id';
+  static const String ID = 'ID';
 
   /// The name
-  static const String NAME = 'name';
+  static const String NAME = 'NAME';
 
   /// The remarks
-  static const String REMARKS = 'remarks';
+  static const String REMARKS = 'REMARKS';
 
   /// The tag
-  static const String TAG = 'tag';
+  static const String TAG = 'TAG';
 
   /// The priority
-  static const String PRIORITY = 'priority';
+  static const String PRIORITY = 'PRIORITY';
 
   /// The deadline
-  static const String DEADLINE = 'deadline';
+  static const String DEADLINE = 'DEADLINE';
 
   /// The deleted
-  static const String DELETED = 'deleted';
+  static const String DELETED = 'DELETED';
 
   /// The completed
-  static const String COMPLETED = 'completed';
+  static const String COMPLETED = 'COMPLETED';
 
   /// The completed datetime
-  static const String COMPLETED_AT = 'completed_at';
+  static const String COMPLETED_AT = 'COMPLETED_AT';
 }

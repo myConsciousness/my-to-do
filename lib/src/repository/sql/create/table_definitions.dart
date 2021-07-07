@@ -12,10 +12,10 @@ class TableDefinitions {
             REMARKS TEXT,
             TAG TEXT,
             PRIORITY INTEGER,
-            DEADLINE DATETIME,
+            DEADLINE INTEGER,
             DELETED INTEGER,
             COMPLETED INTEGER,
-            COMPLETED_AT DATETIME
+            COMPLETED_AT INTEGER
           )
         ''';
 }

@@ -14,8 +14,10 @@ class TodoRepository extends Repository<Todo> {
   @override
   Future<List<Todo>> findAll() async {
     return await super.database.then((Database v) => v.query(table).then(
-        (List<Map<String, Object?>> v) =>
-            v.map((Map<String, Object?> e) => Todo.fromMap(e)).toList()));
+        (List<Map<String, Object?>> v) => v
+            .map((Map<String, Object?> e) =>
+                e.isNotEmpty ? Todo.fromMap(e) : Todo.empty())
+            .toList()));
   }
 
   @override

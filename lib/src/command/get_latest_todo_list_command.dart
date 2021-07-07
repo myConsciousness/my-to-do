@@ -15,44 +15,49 @@ class GetLatestTodoListCommand implements Command {
   List<Card> execute() {
     return <Card>[
       Card(
-        child: Column(
-            mainAxisSize: MainAxisSize.min, children: this._buildTodoList()),
-      )
+          child: FutureBuilder(
+              future: TodoRepository().findAll(),
+              builder: (context, AsyncSnapshot snapshot) {
+                if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+
+                return Card(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: this._buildTaskList(snapshot.data)));
+              }))
     ];
   }
 
-  List<Widget> _buildTodoList() {
-    final List<Widget> todoList = <Widget>[];
+  List<Widget> _buildTaskList(List<Todo> todos) {
+    final List<Widget> taskList = <Widget>[];
 
-    TodoRepository().findAll().then((List<Todo> v) => v.forEach((Todo todo) {
-          todoList.add(ListTile(
-            leading: Icon(Icons.priority_high),
-            title: Text(todo.name),
-            subtitle: Text(todo.remarks),
-          ));
-
-          todoList.add(Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TextButton(
-                child: const Text('Edit'),
-                onPressed: () {/* ... */},
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Complete'),
-                onPressed: () {/* ... */},
-              ),
-              const SizedBox(width: 8),
-              TextButton(
-                child: const Text('Delete'),
-                onPressed: () {/* ... */},
-              ),
-              const SizedBox(width: 8),
-            ],
-          ));
-        }));
-
-    return todoList;
+    for (Todo todo in todos) {
+      taskList.add(ListTile(
+        leading: Icon(Icons.priority_high),
+        title: Text(todo.id.toString()),
+        subtitle: Text(todo.remarks),
+      ));
+      taskList
+          .add(Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+        TextButton(
+          child: const Text('Edit'),
+          onPressed: () {/* ... */},
+        ),
+        const SizedBox(width: 8),
+        TextButton(
+          child: const Text('Complete'),
+          onPressed: () {/* ... */},
+        ),
+        const SizedBox(width: 8),
+        TextButton(
+          child: const Text('Delete'),
+          onPressed: () {/* ... */},
+        ),
+        const SizedBox(width: 8),
+      ]));
+    }
+    return taskList;
   }
 }

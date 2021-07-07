@@ -31,10 +31,10 @@ class _State extends State<TodoListView> {
                     remarks: 'testRemarks',
                     tag: 'test tag',
                     priority: 0,
-                    deadline: DateTime(0),
+                    deadline: DateTime(1993),
                     deleted: false,
                     completed: false,
-                    completedAt: DateTime(0)));
+                    completedAt: DateTime(1993)));
 
                 ScaffoldMessenger.of(context)
                     .showSnackBar(const SnackBar(content: Text('Added!')));
