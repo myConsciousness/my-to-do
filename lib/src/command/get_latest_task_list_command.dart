@@ -12,35 +12,33 @@ class GetLatestTaskListCommand implements Command {
   GetLatestTaskListCommand.newInstance();
 
   @override
-  List<Card> execute() {
-    return <Card>[
-      Card(
-          child: FutureBuilder(
-              future: TodoRepository().findAll(),
-              builder: (context, AsyncSnapshot snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
-                }
+  Container execute() {
+    return Container(
+        child: FutureBuilder(
+      future: TodoRepository().findAll(),
+      builder: (context, AsyncSnapshot snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-                return Card(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: this._buildTaskList(snapshot.data)));
-              }))
-    ];
+        return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (BuildContext context, int index) {
+              return this._buildTaskCard(snapshot.data[index]);
+            });
+      },
+    ));
   }
 
-  List<Widget> _buildTaskList(List<Task> tasks) {
-    final List<Widget> taskList = <Widget>[];
-
-    for (Task task in tasks) {
-      taskList.add(ListTile(
+  Card _buildTaskCard(Task task) {
+    return Card(
+        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      ListTile(
         leading: Icon(Icons.priority_high),
         title: Text(task.name),
         subtitle: Text(task.remarks),
-      ));
-      taskList
-          .add(Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+      ),
+      Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
         TextButton(
           child: const Text('Edit'),
           onPressed: () {/* ... */},
@@ -56,8 +54,7 @@ class GetLatestTaskListCommand implements Command {
           onPressed: () {/* ... */},
         ),
         const SizedBox(width: 8),
-      ]));
-    }
-    return taskList;
+      ])
+    ]));
   }
 }

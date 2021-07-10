@@ -51,14 +51,7 @@ class _State extends State<TaskListView> {
             ),
           ],
         ),
-        body: Stack(
-          fit: StackFit.expand,
-          children: [
-            ListView(
-                children:
-                    Command.of(CommandType.GET_LATEST_TODO_LIST).execute())
-          ],
-        ));
+        body: Command.of(CommandType.GET_LATEST_TODO_LIST).execute());
   }
 }
 
