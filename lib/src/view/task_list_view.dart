@@ -26,7 +26,7 @@ class _State extends State<TaskListView> {
               icon: const Icon(Icons.add),
               tooltip: 'New Task',
               onPressed: () {
-                TodoRepository().insert(Task.from(
+                TaskRepository().insert(Task.from(
                     name: 'testName',
                     remarks: 'testRemarks',
                     tag: 'test tag',

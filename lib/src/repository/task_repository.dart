@@ -7,7 +7,7 @@ import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-class TodoRepository extends Repository<Task> {
+class TaskRepository extends Repository<Task> {
   @override
   String get table => TableNames.TASK;
 

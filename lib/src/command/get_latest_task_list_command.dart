@@ -15,7 +15,7 @@ class GetLatestTaskListCommand implements Command {
   Container execute() {
     return Container(
         child: FutureBuilder(
-      future: TodoRepository().findAll(),
+      future: TaskRepository().findAll(),
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
@@ -34,7 +34,7 @@ class GetLatestTaskListCommand implements Command {
     return Card(
         child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
       ListTile(
-        leading: Icon(Icons.priority_high),
+        leading: Icon(this._getPriorityIcon(task.priority)),
         title: Text(task.name),
         subtitle: Text(task.remarks),
       ),
@@ -51,10 +51,18 @@ class GetLatestTaskListCommand implements Command {
         const SizedBox(width: 8),
         TextButton(
           child: const Text('Delete'),
-          onPressed: () {/* ... */},
+          onPressed: () {
+            TaskRepository().delete(task);
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('Added!')));
+          },
         ),
         const SizedBox(width: 8),
       ])
     ]));
+  }
+
+  IconData _getPriorityIcon(int priority) {
+    return priority == 0 ? Icons.low_priority : Icons.priority_high;
   }
 }
