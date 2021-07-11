@@ -7,15 +7,16 @@ import 'package:mytodo/src/command/command.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 
-class GetLatestTaskListCommand implements Command {
+class GetFavoritedTaskListCommand implements Command {
   /// The constructor.
-  GetLatestTaskListCommand.newInstance();
+  GetFavoritedTaskListCommand.newInstance();
 
   @override
   Container execute() {
     return Container(
         child: FutureBuilder(
-      future: TaskService.getInstance().findNotCompletedAndNotDeleted(),
+      future:
+          TaskService.getInstance().findFavoritedAndNotCompletedAndNotDeleted(),
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());

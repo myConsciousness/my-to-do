@@ -13,8 +13,9 @@ class TableDefinitions {
             TAG TEXT,
             PRIORITY INTEGER,
             DEADLINE INTEGER,
-            DELETED INTEGER,
-            COMPLETED INTEGER,
+            FAVORITED TEXT,
+            DELETED TEXT,
+            COMPLETED TEXT,
             COMPLETED_AT INTEGER
           )
         ''';

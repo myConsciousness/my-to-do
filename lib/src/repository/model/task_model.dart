@@ -2,6 +2,8 @@
 // Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:mytodo/src/repository/boolean_text.dart';
+
 /// The entity class that manages the [TASK] model.
 class Task {
   ///  The id
@@ -21,6 +23,9 @@ class Task {
 
   /// The deadline
   DateTime deadline;
+
+  /// The favorited
+  bool favorited;
 
   /// The deleted
   bool deleted;
@@ -43,6 +48,7 @@ class Task {
         this.tag = '',
         this.priority = 0,
         this.deadline = DateTime(0),
+        this.favorited = false,
         this.deleted = false,
         this.completed = false,
         this.completedAt = DateTime(0);
@@ -55,6 +61,7 @@ class Task {
       required this.tag,
       required this.priority,
       required this.deadline,
+      required this.favorited,
       required this.deleted,
       required this.completed,
       required this.completedAt});
@@ -67,8 +74,9 @@ class Task {
       tag: map[_ColumnName.TAG],
       priority: map[_ColumnName.PRIORITY],
       deadline: DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.DEADLINE]),
-      deleted: map[_ColumnName.DELETED] == 1,
-      completed: map[_ColumnName.COMPLETED] == 1,
+      favorited: map[_ColumnName.FAVORITED] == BooleanText.TRUE,
+      deleted: map[_ColumnName.DELETED] == BooleanText.TRUE,
+      completed: map[_ColumnName.COMPLETED] == BooleanText.TRUE,
       completedAt:
           DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.COMPLETED_AT]));
 
@@ -80,8 +88,12 @@ class Task {
     map[_ColumnName.TAG] = this.tag;
     map[_ColumnName.PRIORITY] = this.priority;
     map[_ColumnName.DEADLINE] = this.deadline.millisecondsSinceEpoch;
-    map[_ColumnName.DELETED] = this.deleted ? 1 : 0;
-    map[_ColumnName.COMPLETED] = this.completed ? 1 : 0;
+    map[_ColumnName.FAVORITED] =
+        this.favorited ? BooleanText.TRUE : BooleanText.FALSE;
+    map[_ColumnName.DELETED] =
+        this.deleted ? BooleanText.TRUE : BooleanText.FALSE;
+    map[_ColumnName.COMPLETED] =
+        this.completed ? BooleanText.TRUE : BooleanText.FALSE;
     map[_ColumnName.COMPLETED_AT] = this.completedAt.millisecondsSinceEpoch;
 
     return map;
@@ -113,8 +125,11 @@ class _ColumnName {
   /// The deadline
   static const String DEADLINE = 'DEADLINE';
 
+  /// The favorited
+  static const String DELETED = 'FAVORITED';
+
   /// The deleted
-  static const String DELETED = 'DELETED';
+  static const String FAVORITED = 'DELETED';
 
   /// The completed
   static const String COMPLETED = 'COMPLETED';

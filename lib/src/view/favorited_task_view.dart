@@ -4,54 +4,47 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command_exporter.dart';
-import 'package:mytodo/src/repository/model/task_model.dart';
-import 'package:mytodo/src/repository/task_repository.dart';
 
-class TaskListView extends StatefulWidget {
+class FavoritedTaskListView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _State();
   }
 }
 
-class _State extends State<TaskListView> {
+class _Text {
+  static const String APP_BAR_TITLE = 'Favorited Task';
+
+  static const String ACTION_TOOLTIP_SEARCH = 'Search';
+
+  static const String ACTION_TOOLTIP_SORT_ORDER = 'Sort Order';
+}
+
+class _State extends State<FavoritedTaskListView> {
   TextEditingController textController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Task List'),
+          title: Text(_Text.APP_BAR_TITLE),
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.add),
-              tooltip: 'New Task',
+              icon: const Icon(Icons.search),
+              tooltip: _Text.ACTION_TOOLTIP_SEARCH,
               onPressed: () {
-                TaskRepository().insert(Task.from(
-                    name: 'testName',
-                    remarks: 'testRemarks',
-                    tag: 'test tag',
-                    priority: 0,
-                    deadline: DateTime(1993),
-                    deleted: false,
-                    completed: false,
-                    completedAt: DateTime(1993)));
-
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(content: Text('Added!')));
+                showSearch(context: context, delegate: DataSearch());
               },
             ),
             IconButton(
-              icon: const Icon(Icons.search),
-              tooltip: 'Search',
+              icon: const Icon(Icons.sort),
+              tooltip: _Text.ACTION_TOOLTIP_SORT_ORDER,
               onPressed: () {
                 showSearch(context: context, delegate: DataSearch());
-                // ScaffoldMessenger.of(context)
-                //     .showSnackBar(const SnackBar(content: Text('Searched!')));
               },
-            ),
+            )
           ],
         ),
-        body: Command.of(CommandType.GET_LATEST_TODO_LIST).execute());
+        body: Command.of(CommandType.GET_FAVORITED_TASK_LIST).execute());
   }
 }
 
