@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:mytodo/src/config/table_names.dart';
+import 'package:mytodo/src/repository/boolean_text.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/task_repository.dart';
 import 'package:sqflite/sqflite.dart';
@@ -57,9 +58,11 @@ class TaskService extends TaskRepository {
 
   @override
   Future<List<Task>> findNotCompletedAndNotDeleted() async {
-    return await super.database.then((Database v) => v
-        .query(table, where: "COMPLETED = 'F' AND DELETED = 'F'")
-        .then((List<Map<String, Object?>> v) => v
+    return await super.database.then((Database v) =>
+        v.query(table, where: "COMPLETED = '?' AND DELETED = '?'", whereArgs: [
+          BooleanText.FALSE,
+          BooleanText.FALSE,
+        ]).then((List<Map<String, Object?>> v) => v
             .map((Map<String, Object?> e) =>
                 e.isNotEmpty ? Task.fromMap(e) : Task.empty())
             .toList()));
@@ -67,10 +70,26 @@ class TaskService extends TaskRepository {
 
   @override
   Future<List<Task>> findFavoritedAndNotCompletedAndNotDeleted() async {
-    return await super.database.then((Database v) => v
-        .query(table,
-            where: "FAVORITED = 'T' AND COMPLETED = 'F' AND DELETED = 'F'")
-        .then((List<Map<String, Object?>> v) => v
+    return await super.database.then((Database v) => v.query(table,
+            where: "FAVORITED = '?' AND COMPLETED = '?' AND DELETED = '?'",
+            whereArgs: [
+              BooleanText.TRUE,
+              BooleanText.FALSE,
+              BooleanText.FALSE
+            ]).then((List<Map<String, Object?>> v) => v
+            .map((Map<String, Object?> e) =>
+                e.isNotEmpty ? Task.fromMap(e) : Task.empty())
+            .toList()));
+  }
+
+  @override
+  Future<List<Task>> findCompletedOrDeleted() async {
+    return await super.database.then((Database v) => v.query(table,
+            where: "COMPLETED = '?' OR DELETED = '?'",
+            whereArgs: [
+              BooleanText.TRUE,
+              BooleanText.TRUE
+            ]).then((List<Map<String, Object?>> v) => v
             .map((Map<String, Object?> e) =>
                 e.isNotEmpty ? Task.fromMap(e) : Task.empty())
             .toList()));

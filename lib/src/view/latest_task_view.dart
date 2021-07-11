@@ -21,8 +21,6 @@ class _Text {
   static const String ACTION_TOOLTIP_SEARCH = 'Search';
 
   static const String ACTION_TOOLTIP_SORT_ORDER = 'Sort Order';
-
-  static const String ACTION_TOOLTIP_FILTER = 'Filter';
 }
 
 class _State extends State<LatestTaskListView> {
@@ -55,16 +53,9 @@ class _State extends State<LatestTaskListView> {
                 showSearch(context: context, delegate: DataSearch());
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.filter),
-              tooltip: _Text.ACTION_TOOLTIP_FILTER,
-              onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
-              },
-            ),
           ],
         ),
-        body: Command.of(CommandType.GET_LATEST_TASK_LIST).execute());
+        body: Command.of(CommandType.GET_LATEST_TASK).execute());
   }
 }
 

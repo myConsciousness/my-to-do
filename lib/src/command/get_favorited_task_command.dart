@@ -7,15 +7,16 @@ import 'package:mytodo/src/command/command.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 
-class GetLatestTaskListCommand implements Command {
+class GetFavoritedTaskCommand implements Command {
   /// The constructor.
-  GetLatestTaskListCommand.newInstance();
+  GetFavoritedTaskCommand.newInstance();
 
   @override
   Container execute() {
     return Container(
         child: FutureBuilder(
-      future: TaskService.getInstance().findNotCompletedAndNotDeleted(),
+      future:
+          TaskService.getInstance().findFavoritedAndNotCompletedAndNotDeleted(),
       builder: (context, AsyncSnapshot snapshot) {
         if (!snapshot.hasData) {
           return Center(child: CircularProgressIndicator());
@@ -40,7 +41,7 @@ class GetLatestTaskListCommand implements Command {
       ),
       Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
         TextButton(
-          child: const Text('Edit'),
+          child: const Icon(Icons.edit),
           onPressed: () {
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('Editted!')));
@@ -48,7 +49,7 @@ class GetLatestTaskListCommand implements Command {
         ),
         const SizedBox(width: 8),
         TextButton(
-          child: const Text('Complete'),
+          child: const Icon(Icons.done),
           onPressed: () {
             task.completed = true;
             TaskService.getInstance().update(task);
@@ -58,7 +59,7 @@ class GetLatestTaskListCommand implements Command {
         ),
         const SizedBox(width: 8),
         TextButton(
-          child: const Text('Delete'),
+          child: const Icon(Icons.delete),
           onPressed: () {
             task.deleted = true;
             TaskService.getInstance().update(task);

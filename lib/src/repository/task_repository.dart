@@ -11,4 +11,7 @@ abstract class TaskRepository extends Repository<Task> {
 
   /// Returns tasks which are favorited and not completed and not deleted.
   Future<List<Task>> findFavoritedAndNotCompletedAndNotDeleted();
+
+  /// Returns tasks which are completed or deleted.
+  Future<List<Task>> findCompletedOrDeleted();
 }

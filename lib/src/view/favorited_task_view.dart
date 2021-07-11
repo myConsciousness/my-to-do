@@ -44,7 +44,7 @@ class _State extends State<FavoritedTaskListView> {
             )
           ],
         ),
-        body: Command.of(CommandType.GET_FAVORITED_TASK_LIST).execute());
+        body: Command.of(CommandType.GET_FAVORITED_TASK).execute());
   }
 }
 
