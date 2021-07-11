@@ -100,9 +100,7 @@ class Task {
   }
 
   /// Returns [true] if this model is empty, otherwise [false].
-  bool isEmpty() {
-    return this._empty;
-  }
+  bool isEmpty() => this._empty;
 }
 
 /// The internal const class that manages the column name of [TODO] repository.

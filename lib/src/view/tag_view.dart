@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
-import 'package:mytodo/src/view/common/drawer_view.dart';
 
 class TagView extends StatefulWidget {
   @override
@@ -20,7 +19,6 @@ class _State extends State<TagView> {
       appBar: AppBar(
         title: Text(ApplicationText.APP_NAME),
       ),
-      drawer: CommonDrawer(),
       body: Text('Tag'),
     );
   }

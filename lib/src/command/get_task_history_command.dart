@@ -12,56 +12,47 @@ class GetTaskHistoryCommand implements Command {
   GetTaskHistoryCommand.newInstance();
 
   @override
-  Container execute() {
-    return Container(
-        child: FutureBuilder(
-      future: TaskService.getInstance().findCompletedOrDeleted(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        }
+  Container execute() => Container(
+          child: FutureBuilder(
+        future: TaskService.getInstance().findCompletedOrDeleted(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-        return ListView.builder(
-            itemCount: snapshot.data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return this._buildTaskCard(context, snapshot.data[index]);
-            });
-      },
-    ));
-  }
+          return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return this._buildTaskCard(context, snapshot.data[index]);
+              });
+        },
+      ));
 
-  Card _buildTaskCard(BuildContext context, Task task) {
-    return Card(
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      ListTile(
-        leading: Icon(this._getHistoryIcon(task)),
-        title: Text(task.id.toString()),
-        subtitle: Text(task.completed.toString() + task.deleted.toString()),
-      ),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-        TextButton(
-          child: const Icon(Icons.undo),
-          onPressed: () {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Incompleted!')));
-          },
+  Card _buildTaskCard(BuildContext context, Task task) => Card(
+          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        ListTile(
+          leading: Icon(this._getHistoryIcon(task)),
+          title: Text(task.id.toString()),
+          subtitle: Text(task.completed.toString() + task.deleted.toString()),
         ),
-        TextButton(
-          child: const Icon(Icons.delete_forever),
-          onPressed: () {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Deleted!')));
-          },
-        )
-      ])
-    ]));
-  }
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+          TextButton(
+            child: const Icon(Icons.undo),
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Incompleted!')));
+            },
+          ),
+          TextButton(
+            child: const Icon(Icons.delete_forever),
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Deleted!')));
+            },
+          )
+        ])
+      ]));
 
-  IconData _getHistoryIcon(Task task) {
-    if (task.completed) {
-      return Icons.done;
-    }
-
-    return Icons.delete;
-  }
+  IconData _getHistoryIcon(Task task) =>
+      task.completed ? Icons.done : Icons.delete;
 }

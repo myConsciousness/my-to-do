@@ -27,22 +27,20 @@ class DatabaseProvider {
   Future<Database> get database => this._database;
 
   /// Returns the  instance of database.
-  static Future<Database> _getDatabase() async {
-    return await openDatabase(
-      join(
-        await getDatabasesPath(),
-        _DATABASE_NAME,
-      ),
-      onCreate: (Database database, int version) async {
-        await database.execute(TableDefinitions.TASK);
-      },
-      onUpgrade: (Database db, int oldVersion, int newVersion) async {
-        // Do nothing now
-      },
-      onDowngrade: (Database db, int oldVersion, int newVersion) async {
-        // Do nothing now
-      },
-      version: 1,
-    );
-  }
+  static Future<Database> _getDatabase() async => await openDatabase(
+        join(
+          await getDatabasesPath(),
+          _DATABASE_NAME,
+        ),
+        onCreate: (Database database, int version) async {
+          await database.execute(TableDefinitions.TASK);
+        },
+        onUpgrade: (Database db, int oldVersion, int newVersion) async {
+          // Do nothing now
+        },
+        onDowngrade: (Database db, int oldVersion, int newVersion) async {
+          // Do nothing now
+        },
+        version: 1,
+      );
 }

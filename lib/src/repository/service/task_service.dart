@@ -22,20 +22,17 @@ class TaskService extends TaskRepository {
   String get table => TableNames.TASK;
 
   @override
-  Future<List<Task>> findAll() async {
-    return await super.database.then((Database v) => v.query(table).then(
-        (List<Map<String, Object?>> v) => v
-            .map((Map<String, Object?> e) =>
-                e.isNotEmpty ? Task.fromMap(e) : Task.empty())
-            .toList()));
-  }
+  Future<List<Task>> findAll() async => await super.database.then(
+      (Database v) => v.query(table).then((List<Map<String, Object?>> v) => v
+          .map((Map<String, Object?> e) =>
+              e.isNotEmpty ? Task.fromMap(e) : Task.empty())
+          .toList()));
 
   @override
-  Future<Task> findById(int id) async {
-    return await super.database.then((Database database) => database
-        .query(table, where: 'ID = ?', whereArgs: [id]).then(
-            (v) => v.isNotEmpty ? Task.fromMap(v[0]) : Task.empty()));
-  }
+  Future<Task> findById(int id) async =>
+      await super.database.then((Database database) => database
+          .query(table, where: 'ID = ?', whereArgs: [id]).then(
+              (v) => v.isNotEmpty ? Task.fromMap(v[0]) : Task.empty()));
 
   @override
   Future<Task> insert(Task task) async {
@@ -45,53 +42,49 @@ class TaskService extends TaskRepository {
   }
 
   @override
-  void update(Task task) async {
-    await super.database.then((Database database) => database
-        .update(table, task.toMap(), where: 'ID = ?', whereArgs: [task.id]));
-  }
+  void update(Task task) async =>
+      await super.database.then((Database database) => database
+          .update(table, task.toMap(), where: 'ID = ?', whereArgs: [task.id]));
 
   @override
-  void delete(Task task) async {
-    await super.database.then((Database database) =>
-        database.delete(table, where: 'ID = ?', whereArgs: [task.id]));
-  }
+  void delete(Task task) async =>
+      await super.database.then((Database database) =>
+          database.delete(table, where: 'ID = ?', whereArgs: [task.id]));
 
   @override
-  Future<List<Task>> findNotCompletedAndNotDeleted() async {
-    return await super.database.then((Database v) =>
-        v.query(table, where: "COMPLETED = '?' AND DELETED = '?'", whereArgs: [
-          BooleanText.FALSE,
-          BooleanText.FALSE,
-        ]).then((List<Map<String, Object?>> v) => v
-            .map((Map<String, Object?> e) =>
-                e.isNotEmpty ? Task.fromMap(e) : Task.empty())
-            .toList()));
-  }
+  Future<List<Task>> findNotCompletedAndNotDeleted() async =>
+      await super.database.then((Database v) => v.query(table,
+              where: "COMPLETED = '?' AND DELETED = '?'",
+              whereArgs: [
+                BooleanText.FALSE,
+                BooleanText.FALSE,
+              ]).then((List<Map<String, Object?>> v) => v
+              .map((Map<String, Object?> e) =>
+                  e.isNotEmpty ? Task.fromMap(e) : Task.empty())
+              .toList()));
 
   @override
-  Future<List<Task>> findFavoritedAndNotCompletedAndNotDeleted() async {
-    return await super.database.then((Database v) => v.query(table,
-            where: "FAVORITED = '?' AND COMPLETED = '?' AND DELETED = '?'",
-            whereArgs: [
-              BooleanText.TRUE,
-              BooleanText.FALSE,
-              BooleanText.FALSE
-            ]).then((List<Map<String, Object?>> v) => v
-            .map((Map<String, Object?> e) =>
-                e.isNotEmpty ? Task.fromMap(e) : Task.empty())
-            .toList()));
-  }
+  Future<List<Task>> findFavoritedAndNotCompletedAndNotDeleted() async =>
+      await super.database.then((Database v) => v.query(table,
+              where: "FAVORITED = '?' AND COMPLETED = '?' AND DELETED = '?'",
+              whereArgs: [
+                BooleanText.TRUE,
+                BooleanText.FALSE,
+                BooleanText.FALSE
+              ]).then((List<Map<String, Object?>> v) => v
+              .map((Map<String, Object?> e) =>
+                  e.isNotEmpty ? Task.fromMap(e) : Task.empty())
+              .toList()));
 
   @override
-  Future<List<Task>> findCompletedOrDeleted() async {
-    return await super.database.then((Database v) => v.query(table,
-            where: "COMPLETED = '?' OR DELETED = '?'",
-            whereArgs: [
-              BooleanText.TRUE,
-              BooleanText.TRUE
-            ]).then((List<Map<String, Object?>> v) => v
-            .map((Map<String, Object?> e) =>
-                e.isNotEmpty ? Task.fromMap(e) : Task.empty())
-            .toList()));
-  }
+  Future<List<Task>> findCompletedOrDeleted() async =>
+      await super.database.then((Database v) => v.query(table,
+              where: "COMPLETED = '?' OR DELETED = '?'",
+              whereArgs: [
+                BooleanText.TRUE,
+                BooleanText.TRUE
+              ]).then((List<Map<String, Object?>> v) => v
+              .map((Map<String, Object?> e) =>
+                  e.isNotEmpty ? Task.fromMap(e) : Task.empty())
+              .toList()));
 }

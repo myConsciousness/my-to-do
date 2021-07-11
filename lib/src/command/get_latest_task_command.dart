@@ -12,66 +12,61 @@ class GetLatestTaskCommand implements Command {
   GetLatestTaskCommand.newInstance();
 
   @override
-  Container execute() {
-    return Container(
-        child: FutureBuilder(
-      future: TaskService.getInstance().findNotCompletedAndNotDeleted(),
-      builder: (context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
-        }
+  Container execute() => Container(
+          child: FutureBuilder(
+        future: TaskService.getInstance().findNotCompletedAndNotDeleted(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-        return ListView.builder(
-            itemCount: snapshot.data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return this._buildTaskCard(context, snapshot.data[index]);
-            });
-      },
-    ));
-  }
+          return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return this._buildTaskCard(context, snapshot.data[index]);
+              });
+        },
+      ));
 
-  Card _buildTaskCard(BuildContext context, Task task) {
-    return Card(
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      ListTile(
-        leading: Icon(this._getPriorityIcon(task.priority)),
-        title: Text(task.id.toString()),
-        subtitle: Text(task.completed.toString() + task.deleted.toString()),
-      ),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
-        TextButton(
-          child: const Icon(Icons.edit),
-          onPressed: () {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Editted!')));
-          },
+  Card _buildTaskCard(BuildContext context, Task task) => Card(
+          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        ListTile(
+          leading: Icon(this._getPriorityIcon(task.priority)),
+          title: Text(task.id.toString()),
+          subtitle: Text(task.completed.toString() + task.deleted.toString()),
         ),
-        const SizedBox(width: 8),
-        TextButton(
-          child: const Icon(Icons.done),
-          onPressed: () {
-            task.completed = true;
-            TaskService.getInstance().update(task);
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Completed!')));
-          },
-        ),
-        const SizedBox(width: 8),
-        TextButton(
-          child: const Icon(Icons.delete),
-          onPressed: () {
-            task.deleted = true;
-            TaskService.getInstance().update(task);
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Deleted!')));
-          },
-        ),
-        const SizedBox(width: 8),
-      ])
-    ]));
-  }
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+          TextButton(
+            child: const Icon(Icons.edit),
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Editted!')));
+            },
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            child: const Icon(Icons.done),
+            onPressed: () {
+              task.completed = true;
+              TaskService.getInstance().update(task);
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Completed!')));
+            },
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            child: const Icon(Icons.delete),
+            onPressed: () {
+              task.deleted = true;
+              TaskService.getInstance().update(task);
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Deleted!')));
+            },
+          ),
+          const SizedBox(width: 8),
+        ])
+      ]));
 
-  IconData _getPriorityIcon(int priority) {
-    return priority == 0 ? Icons.low_priority : Icons.priority_high;
-  }
+  IconData _getPriorityIcon(int priority) =>
+      priority == 0 ? Icons.low_priority : Icons.priority_high;
 }

@@ -21,31 +21,28 @@ class _Text {
 }
 
 class _State extends State<HistoryView> {
-  TextEditingController textController = TextEditingController();
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(_Text.APP_BAR_TITLE),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.search),
-              tooltip: _Text.ACTION_TOOLTIP_SEARCH,
-              onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.sort),
-              tooltip: _Text.ACTION_TOOLTIP_SORT_ORDER,
-              onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
-              },
-            )
-          ],
-        ),
-        body: Command.of(CommandType.GET_TASK_HISTORY).execute());
-  }
+  Widget build(BuildContext context) => Scaffold(
+      appBar: AppBar(
+        title: Text(_Text.APP_BAR_TITLE),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.search),
+            tooltip: _Text.ACTION_TOOLTIP_SEARCH,
+            onPressed: () {
+              showSearch(context: context, delegate: DataSearch());
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.sort),
+            tooltip: _Text.ACTION_TOOLTIP_SORT_ORDER,
+            onPressed: () {
+              showSearch(context: context, delegate: DataSearch());
+            },
+          )
+        ],
+      ),
+      body: Command.of(CommandType.GET_TASK_HISTORY).execute());
 }
 
 class DataSearch extends SearchDelegate<String> {

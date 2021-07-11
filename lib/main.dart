@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
 import 'package:mytodo/src/view/favorited_task_view.dart';
 import 'package:mytodo/src/view/history_view.dart';
-import 'package:mytodo/src/view/label_view.dart';
 import 'package:mytodo/src/view/setting_view.dart';
 import 'package:mytodo/src/view/tag_view.dart';
 import 'package:mytodo/src/view/latest_task_view.dart';
@@ -15,37 +14,33 @@ void main() => runApp(MyToDo());
 
 class MyToDo extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: DefaultTabController(
-        length: 6,
-        child: Scaffold(
-          appBar: AppBar(
-            bottom: TabBar(
-              tabs: [
-                Tab(icon: Icon(Icons.list)),
-                Tab(icon: Icon(Icons.star)),
-                Tab(icon: Icon(Icons.label)),
-                Tab(icon: Icon(Icons.tag)),
-                Tab(icon: Icon(Icons.history)),
-                Tab(icon: Icon(Icons.settings)),
+  Widget build(BuildContext context) => MaterialApp(
+        theme: ThemeData.dark(),
+        home: DefaultTabController(
+          length: 5,
+          child: Scaffold(
+            appBar: AppBar(
+              bottom: TabBar(
+                tabs: [
+                  Tab(icon: Icon(Icons.list)),
+                  Tab(icon: Icon(Icons.star)),
+                  Tab(icon: Icon(Icons.tag)),
+                  Tab(icon: Icon(Icons.history)),
+                  Tab(icon: Icon(Icons.settings)),
+                ],
+              ),
+              title: Text(ApplicationText.APP_NAME),
+            ),
+            body: TabBarView(
+              children: [
+                LatestTaskListView(),
+                FavoritedTaskListView(),
+                TagView(),
+                HistoryView(),
+                SettingView(),
               ],
             ),
-            title: Text(ApplicationText.APP_NAME),
-          ),
-          body: TabBarView(
-            children: [
-              LatestTaskListView(),
-              FavoritedTaskListView(),
-              LabelView(),
-              TagView(),
-              HistoryView(),
-              SettingView(),
-            ],
           ),
         ),
-      ),
-    );
-  }
+      );
 }
