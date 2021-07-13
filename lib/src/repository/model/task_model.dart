@@ -2,12 +2,16 @@
 // Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/boolean_text.dart';
 
 /// The entity class that manages the [TASK] model.
 class Task {
+  /// The tag delimiter
+  static const String _TAG_DELIMITER = ',';
+
   ///  The id
-  int id;
+  int id = -1;
 
   /// The name
   String name;
@@ -16,25 +20,25 @@ class Task {
   String remarks;
 
   /// The tag
-  String tag;
+  List<String> tags = <String>[];
 
   /// The priority
-  int priority;
+  Priority priority;
 
   /// The deadline
   DateTime deadline;
 
   /// The favorited
-  bool favorited;
+  bool favorited = false;
 
   /// The deleted
-  bool deleted;
+  bool deleted = false;
 
   /// The completed
-  bool completed;
+  bool completed = false;
 
   /// The completed datetime
-  DateTime completedAt;
+  late DateTime completedAt;
 
   /// The flag that represents if this model is exist
   bool _empty = false;
@@ -42,37 +46,32 @@ class Task {
   /// Returns the empty instance of [Task].
   Task.empty()
       : this._empty = true,
-        this.id = 0,
+        this.id = -1,
         this.name = '',
         this.remarks = '',
-        this.tag = '',
-        this.priority = 0,
-        this.deadline = DateTime(0),
-        this.favorited = false,
-        this.deleted = false,
-        this.completed = false,
-        this.completedAt = DateTime(0);
+        this.priority = Priority.LOW,
+        this.deadline = DateTime(0);
 
   /// Returns the new instance of [Todo] based on the parameters.
   Task.from(
-      {this.id = 0,
+      {this.id = -1,
       required this.name,
       required this.remarks,
-      required this.tag,
+      required this.tags,
       required this.priority,
       required this.deadline,
-      required this.favorited,
-      required this.deleted,
-      required this.completed,
-      required this.completedAt});
+      this.favorited = false,
+      this.deleted = false,
+      this.completed = false,
+      this.completedAt});
 
   /// Returns the new instance of [Todo] based on the [map] passed as an argument.
   factory Task.fromMap(Map<String, dynamic> map) => Task.from(
       id: map[_ColumnName.ID],
       name: map[_ColumnName.NAME],
       remarks: map[_ColumnName.REMARKS],
-      tag: map[_ColumnName.TAG],
-      priority: map[_ColumnName.PRIORITY],
+      tags: map[_ColumnName.TAG].toString().split(_TAG_DELIMITER),
+      priority: map[_ColumnName.PRIORITY] == 0 ? Priority.LOW : Priority.HIGH,
       deadline: DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.DEADLINE]),
       favorited: map[_ColumnName.FAVORITED] == BooleanText.TRUE,
       deleted: map[_ColumnName.DELETED] == BooleanText.TRUE,
@@ -85,8 +84,8 @@ class Task {
     var map = Map<String, dynamic>();
     map[_ColumnName.NAME] = this.name;
     map[_ColumnName.REMARKS] = this.remarks;
-    map[_ColumnName.TAG] = this.tag;
-    map[_ColumnName.PRIORITY] = this.priority;
+    map[_ColumnName.TAG] = this.tags.join(_TAG_DELIMITER);
+    map[_ColumnName.PRIORITY] = this.priority == Priority.LOW ? 0 : 1;
     map[_ColumnName.DEADLINE] = this.deadline.millisecondsSinceEpoch;
     map[_ColumnName.FAVORITED] =
         this.favorited ? BooleanText.TRUE : BooleanText.FALSE;
@@ -94,7 +93,7 @@ class Task {
         this.deleted ? BooleanText.TRUE : BooleanText.FALSE;
     map[_ColumnName.COMPLETED] =
         this.completed ? BooleanText.TRUE : BooleanText.FALSE;
-    map[_ColumnName.COMPLETED_AT] = this.completedAt.millisecondsSinceEpoch;
+    map[_ColumnName.COMPLETED_AT] = this.completedAt?.millisecondsSinceEpoch;
 
     return map;
   }

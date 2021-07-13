@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command.dart';
+import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 
@@ -68,6 +69,6 @@ class GetFavoritedTaskCommand implements Command {
         ])
       ]));
 
-  IconData _getPriorityIcon(int priority) =>
-      priority == 0 ? Icons.low_priority : Icons.priority_high;
+  IconData _getPriorityIcon(Priority? priority) =>
+      priority == Priority.LOW ? Icons.low_priority : Icons.priority_high;
 }

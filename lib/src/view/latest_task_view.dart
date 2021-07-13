@@ -9,6 +9,7 @@ import 'package:mytodo/src/view/add_new_task_view.dart';
 class LatestTaskListView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
+    print(Command.of(CommandType.GET_LATEST_TASK).execute());
     return _State();
   }
 }
