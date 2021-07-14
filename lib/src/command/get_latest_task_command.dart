@@ -12,10 +12,12 @@ class GetLatestTaskCommand implements Command {
   /// The constructor.
   GetLatestTaskCommand.newInstance();
 
+  final TaskService taskService = TaskService.getInstance();
+
   @override
   Container execute() => Container(
           child: FutureBuilder(
-        future: TaskService.getInstance().findNotCompletedAndNotDeleted(),
+        future: this.taskService.findNotCompletedAndNotDeleted(),
         builder: (context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -31,10 +33,28 @@ class GetLatestTaskCommand implements Command {
 
   Card _buildTaskCard(BuildContext context, Task task) => Card(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        ListTile(
-          leading: Icon(this._getPriorityIcon(task.priority)),
-          title: Text(task.name),
-          subtitle: Text(task.remarks),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+                child: ListTile(
+              leading: Icon(this._getPriorityIcon(task.priority)),
+              title: Text(task.name),
+              subtitle: Text(task.remarks),
+            )),
+            TextButton(
+              child: Icon(task.favorited ? Icons.star : Icons.star_border),
+              onPressed: () {
+                final String actionMessage =
+                    task.favorited ? 'Unfavorited Task!' : 'Favorited Task!';
+                task.favorited = !task.favorited;
+                this.taskService.update(task);
+
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(actionMessage)));
+              },
+            ),
+          ],
         ),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
           TextButton(

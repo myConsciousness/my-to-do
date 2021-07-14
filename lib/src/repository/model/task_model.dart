@@ -137,10 +137,10 @@ class _ColumnName {
   static const String DEADLINE = 'DEADLINE';
 
   /// The favorited
-  static const String DELETED = 'FAVORITED';
+  static const String FAVORITED = 'FAVORITED';
 
   /// The deleted
-  static const String FAVORITED = 'DELETED';
+  static const String DELETED = 'DELETED';
 
   /// The completed
   static const String COMPLETED = 'COMPLETED';
