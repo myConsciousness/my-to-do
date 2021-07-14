@@ -8,7 +8,7 @@ import 'package:mytodo/src/repository/boolean_text.dart';
 /// The entity class that manages the [TASK] model.
 class Task {
   /// The tag delimiter
-  static const String _TAG_DELIMITER = ',';
+  static const String _TAG_DELIMITER = '@';
 
   ///  The id
   int id = -1;
@@ -37,8 +37,11 @@ class Task {
   /// The completed
   bool completed = false;
 
-  /// The completed datetime
-  late DateTime completedAt;
+  /// The created datetime
+  DateTime createdAt = DateTime.now();
+
+  /// The updated datetime
+  DateTime updatedAt = DateTime.now();
 
   /// The flag that represents if this model is exist
   bool _empty = false;
@@ -63,21 +66,31 @@ class Task {
       this.favorited = false,
       this.deleted = false,
       this.completed = false,
-      this.completedAt});
+      required this.createdAt,
+      required this.updatedAt});
 
   /// Returns the new instance of [Todo] based on the [map] passed as an argument.
-  factory Task.fromMap(Map<String, dynamic> map) => Task.from(
-      id: map[_ColumnName.ID],
-      name: map[_ColumnName.NAME],
-      remarks: map[_ColumnName.REMARKS],
-      tags: map[_ColumnName.TAG].toString().split(_TAG_DELIMITER),
-      priority: map[_ColumnName.PRIORITY] == 0 ? Priority.LOW : Priority.HIGH,
-      deadline: DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.DEADLINE]),
-      favorited: map[_ColumnName.FAVORITED] == BooleanText.TRUE,
-      deleted: map[_ColumnName.DELETED] == BooleanText.TRUE,
-      completed: map[_ColumnName.COMPLETED] == BooleanText.TRUE,
-      completedAt:
-          DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.COMPLETED_AT]));
+  factory Task.fromMap(Map<String, dynamic> map) {
+    return Task.from(
+        id: map[_ColumnName.ID],
+        name: map[_ColumnName.NAME],
+        remarks: map[_ColumnName.REMARKS],
+        tags: map[_ColumnName.TAG].toString().split(_TAG_DELIMITER),
+        priority: map[_ColumnName.PRIORITY] == 0 ? Priority.LOW : Priority.HIGH,
+        deadline:
+            DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.DEADLINE]),
+        favorited: map[_ColumnName.FAVORITED] == BooleanText.TRUE,
+        deleted: map[_ColumnName.DELETED] == BooleanText.TRUE,
+        completed: map[_ColumnName.COMPLETED] == BooleanText.TRUE,
+        createdAt: DateTime.fromMillisecondsSinceEpoch(
+            map[_ColumnName.CREATED_AT] == null
+                ? 0
+                : map[_ColumnName.CREATED_AT]),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(
+            map[_ColumnName.UPDATED_AT] == null
+                ? 0
+                : map[_ColumnName.UPDATED_AT]));
+  }
 
   /// Returns this [Todo] model as [Map].
   Map<String, dynamic> toMap() {
@@ -93,7 +106,8 @@ class Task {
         this.deleted ? BooleanText.TRUE : BooleanText.FALSE;
     map[_ColumnName.COMPLETED] =
         this.completed ? BooleanText.TRUE : BooleanText.FALSE;
-    map[_ColumnName.COMPLETED_AT] = this.completedAt?.millisecondsSinceEpoch;
+    map[_ColumnName.CREATED_AT] = this.createdAt.millisecondsSinceEpoch;
+    map[_ColumnName.UPDATED_AT] = this.updatedAt.millisecondsSinceEpoch;
 
     return map;
   }
@@ -131,6 +145,9 @@ class _ColumnName {
   /// The completed
   static const String COMPLETED = 'COMPLETED';
 
-  /// The completed datetime
-  static const String COMPLETED_AT = 'COMPLETED_AT';
+  /// The created datetime
+  static const String CREATED_AT = 'CREATED_AT';
+
+  /// The updated datetime
+  static const String UPDATED_AT = 'UPDATED_AT';
 }

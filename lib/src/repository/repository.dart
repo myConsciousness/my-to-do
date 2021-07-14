@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:mytodo/src/repository/database/database_provider.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 abstract class Repository<T> {
@@ -17,6 +18,12 @@ abstract class Repository<T> {
 
   /// Returns the unique model linked to the [id] passed as an argument.
   Future<T> findById(int id);
+
+  /// Returns the count of records.
+  Future<int?> count() async {
+    return Sqflite.firstIntValue(await this.database.then((Database database) =>
+        database.rawQuery('SELECT COUNT(*) FROM $table;')));
+  }
 
   /// Inserts the [model] and returns the new [model] with autoincremented id.
   Future<T> insert(T model);

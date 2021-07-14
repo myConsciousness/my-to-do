@@ -16,7 +16,8 @@ class TableDefinitions {
             FAVORITED TEXT,
             DELETED TEXT,
             COMPLETED TEXT,
-            COMPLETED_AT INTEGER
+            CREATED_AT INTEGER,
+            UPDATED_AT INTEGER
           )
         ''';
 }

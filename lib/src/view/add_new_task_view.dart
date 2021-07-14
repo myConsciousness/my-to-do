@@ -84,7 +84,9 @@ class _State extends State<AddNewTaskView> {
                     this._selectedTime!.minute),
                 favorited: false,
                 deleted: false,
-                completed: false));
+                completed: false,
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now()));
 
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('Added Task!')));
