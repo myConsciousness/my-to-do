@@ -12,20 +12,30 @@ import 'package:mytodo/src/view/widget/tags_styler.dart';
 import 'package:mytodo/src/view/widget/text_field_style.dart';
 import 'package:mytodo/src/view/widget/text_field_tags.dart';
 
-class AddNewTaskView extends StatefulWidget {
+class EditTaskView extends StatefulWidget {
+  /// The task to be edited
+  final Task _task;
+
+  EditTaskView(Task task) : this._task = task;
+
   @override
   State<StatefulWidget> createState() {
-    return _State();
+    return _State(this._task);
   }
 }
 
 class _Text {
-  static const String APP_BAR_TITLE = 'New Task';
+  static const String APP_BAR_TITLE = 'Edit Task';
 
   static const String ACTION_TOOLTIP_DONE = 'Done';
 }
 
-class _State extends State<AddNewTaskView> {
+class _State extends State<EditTaskView> {
+  /// The task to be edited
+  final Task _task;
+
+  _State(Task task) : this._task = task;
+
   /// The max length of task name
   static const int _MAX_LENGTH_TASK_NAME = 20;
 
@@ -56,6 +66,16 @@ class _State extends State<AddNewTaskView> {
   void initState() {
     super.initState();
 
+    this._taskNameController.text = this._task.name;
+    this._remarksController.text = this._task.remarks;
+    this._selectedDateStr = this._task.hasDeadline
+        ? this._dateFormat.format(this._task.deadline)
+        : '';
+    this._selectedTimeStr = this._task.hasDeadline
+        ? this._timeFormat.format(this._task.deadline)
+        : '';
+    this._priority = this._task.priority;
+
     this._taskNameController.addListener(() => super.setState(() {
           this._taskNameController.text;
         }));
@@ -72,7 +92,7 @@ class _State extends State<AddNewTaskView> {
           icon: const Icon(Icons.check),
           tooltip: _Text.ACTION_TOOLTIP_DONE,
           onPressed: () {
-            TaskService.getInstance().insert(Task.from(
+            TaskService.getInstance().update(Task.from(
                 name: this._taskNameController.text,
                 remarks: this._remarksController.text,
                 tags: this._tags,
@@ -88,7 +108,7 @@ class _State extends State<AddNewTaskView> {
                 updatedAt: DateTime.now()));
 
             ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Added Task!')));
+                .showSnackBar(const SnackBar(content: Text('Updated Task!')));
           },
         ),
       ]),
@@ -134,6 +154,7 @@ class _State extends State<AddNewTaskView> {
               SizedBox(height: 8),
               Flexible(
                   child: TextFieldTags(
+                      initialTags: this._task.tags,
                       textFieldStyler: TextFieldStyler(icon: Icon(Icons.tag)),
                       tagsStyler: TagsStyler(),
                       onTag: (String tag) {

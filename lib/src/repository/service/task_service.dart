@@ -65,7 +65,7 @@ class TaskService extends TaskRepository {
   @override
   Future<List<Task>> findFavoritedAndNotCompletedAndNotDeleted() async =>
       await super.database.then((Database v) => v.query(table,
-              where: "FAVORITED = '?' AND COMPLETED = '?' AND DELETED = '?'",
+              where: "FAVORITED = ? AND COMPLETED = ? AND DELETED = ?",
               whereArgs: [
                 BooleanText.TRUE,
                 BooleanText.FALSE,
@@ -78,7 +78,7 @@ class TaskService extends TaskRepository {
   @override
   Future<List<Task>> findCompletedOrDeleted() async =>
       await super.database.then((Database v) => v.query(table,
-              where: "COMPLETED = '?' OR DELETED = '?'",
+              where: "COMPLETED = ? OR DELETED = ?",
               whereArgs: [
                 BooleanText.TRUE,
                 BooleanText.TRUE

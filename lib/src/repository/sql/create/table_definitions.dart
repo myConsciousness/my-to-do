@@ -12,6 +12,7 @@ class TableDefinitions {
             REMARKS TEXT,
             TAG TEXT,
             PRIORITY INTEGER,
+            HAS_DEADLINE INTEGER,
             DEADLINE INTEGER,
             FAVORITED TEXT,
             DELETED TEXT,

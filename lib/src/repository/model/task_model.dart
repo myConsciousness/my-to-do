@@ -25,6 +25,9 @@ class Task {
   /// The priority
   Priority priority;
 
+  /// The flag if the task has deadline
+  bool hasDeadline;
+
   /// The deadline
   DateTime deadline;
 
@@ -53,6 +56,7 @@ class Task {
         this.name = '',
         this.remarks = '',
         this.priority = Priority.LOW,
+        this.hasDeadline = false,
         this.deadline = DateTime(0);
 
   /// Returns the new instance of [Todo] based on the parameters.
@@ -62,6 +66,7 @@ class Task {
       required this.remarks,
       required this.tags,
       required this.priority,
+      required this.hasDeadline,
       required this.deadline,
       this.favorited = false,
       this.deleted = false,
@@ -77,6 +82,7 @@ class Task {
         remarks: map[_ColumnName.REMARKS],
         tags: map[_ColumnName.TAG].toString().split(_TAG_DELIMITER),
         priority: map[_ColumnName.PRIORITY] == 0 ? Priority.LOW : Priority.HIGH,
+        hasDeadline: map[_ColumnName.HAS_DEADLINE] == BooleanText.TRUE,
         deadline:
             DateTime.fromMillisecondsSinceEpoch(map[_ColumnName.DEADLINE]),
         favorited: map[_ColumnName.FAVORITED] == BooleanText.TRUE,
@@ -99,6 +105,8 @@ class Task {
     map[_ColumnName.REMARKS] = this.remarks;
     map[_ColumnName.TAG] = this.tags.join(_TAG_DELIMITER);
     map[_ColumnName.PRIORITY] = this.priority == Priority.LOW ? 0 : 1;
+    map[_ColumnName.HAS_DEADLINE] =
+        this.hasDeadline ? BooleanText.TRUE : BooleanText.FALSE;
     map[_ColumnName.DEADLINE] = this.deadline.millisecondsSinceEpoch;
     map[_ColumnName.FAVORITED] =
         this.favorited ? BooleanText.TRUE : BooleanText.FALSE;
@@ -132,6 +140,9 @@ class _ColumnName {
 
   /// The priority
   static const String PRIORITY = 'PRIORITY';
+
+  /// The has deadline
+  static const String HAS_DEADLINE = 'HAS_DEADLINE';
 
   /// The deadline
   static const String DEADLINE = 'DEADLINE';
