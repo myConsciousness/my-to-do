@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
+import 'package:mytodo/src/view/edit_task_view.dart';
 
 class FavoritedTaskListView extends StatefulWidget {
   @override
@@ -16,10 +17,6 @@ class FavoritedTaskListView extends StatefulWidget {
 
 class _Text {
   static const String APP_BAR_TITLE = 'Favorited Task';
-
-  static const String ACTION_TOOLTIP_SEARCH = 'Search';
-
-  static const String ACTION_TOOLTIP_SORT_ORDER = 'Sort Order';
 }
 
 class _State extends State<FavoritedTaskListView> {
@@ -29,22 +26,6 @@ class _State extends State<FavoritedTaskListView> {
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: Text(_Text.APP_BAR_TITLE),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.search),
-            tooltip: _Text.ACTION_TOOLTIP_SEARCH,
-            onPressed: () {
-              showSearch(context: context, delegate: DataSearch());
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.sort),
-            tooltip: _Text.ACTION_TOOLTIP_SORT_ORDER,
-            onPressed: () {
-              showSearch(context: context, delegate: DataSearch());
-            },
-          )
-        ],
       ),
       body: Container(
           child: FutureBuilder(
@@ -83,17 +64,18 @@ class _State extends State<FavoritedTaskListView> {
                 });
               },
             ),
+            SizedBox(width: 7),
           ],
         ),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
           TextButton(
             child: const Icon(Icons.edit),
             onPressed: () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Editted!')));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditTaskView(task)));
             },
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 7),
           TextButton(
             child: const Icon(Icons.done),
             onPressed: () {
@@ -103,7 +85,7 @@ class _State extends State<FavoritedTaskListView> {
                   .showSnackBar(const SnackBar(content: Text('Completed!')));
             },
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 7),
           TextButton(
             child: const Icon(Icons.delete),
             onPressed: () {
@@ -113,7 +95,7 @@ class _State extends State<FavoritedTaskListView> {
                   .showSnackBar(const SnackBar(content: Text('Deleted!')));
             },
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 7),
         ])
       ]));
 

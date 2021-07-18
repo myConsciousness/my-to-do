@@ -17,7 +17,7 @@ class MyToDo extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData.dark(),
         home: DefaultTabController(
-          length: 5,
+          length: 4,
           child: Scaffold(
             appBar: AppBar(
               bottom: TabBar(
@@ -25,8 +25,7 @@ class MyToDo extends StatelessWidget {
                   Tab(icon: Icon(Icons.list)),
                   Tab(icon: Icon(Icons.star)),
                   Tab(icon: Icon(Icons.tag)),
-                  Tab(icon: Icon(Icons.history)),
-                  Tab(icon: Icon(Icons.settings)),
+                  Tab(icon: Icon(Icons.history))
                 ],
               ),
               title: Text(ApplicationText.APP_NAME),
@@ -36,8 +35,7 @@ class MyToDo extends StatelessWidget {
                 LatestTaskListView(),
                 FavoritedTaskListView(),
                 TagView(),
-                HistoryView(),
-                SettingView(),
+                HistoryView()
               ],
             ),
           ),

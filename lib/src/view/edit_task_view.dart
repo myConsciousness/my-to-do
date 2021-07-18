@@ -68,6 +68,8 @@ class _State extends State<EditTaskView> {
 
     this._taskNameController.text = this._task.name;
     this._remarksController.text = this._task.remarks;
+    this._tags = this._task.tags;
+    this._dateSelected = this._task.hasDeadline;
     this._selectedDateStr = this._task.hasDeadline
         ? this._dateFormat.format(this._task.deadline)
         : '';
@@ -93,6 +95,7 @@ class _State extends State<EditTaskView> {
           tooltip: _Text.ACTION_TOOLTIP_DONE,
           onPressed: () {
             TaskService.getInstance().update(Task.from(
+                id: this._task.id,
                 name: this._taskNameController.text,
                 remarks: this._remarksController.text,
                 tags: this._tags,
@@ -104,7 +107,7 @@ class _State extends State<EditTaskView> {
                     this._selectedDate.day,
                     this._selectedTime.hour,
                     this._selectedTime.minute),
-                createdAt: DateTime.now(),
+                createdAt: this._task.createdAt,
                 updatedAt: DateTime.now()));
 
             ScaffoldMessenger.of(context)
@@ -154,21 +157,21 @@ class _State extends State<EditTaskView> {
               SizedBox(height: 8),
               Flexible(
                   child: TextFieldTags(
-                      initialTags: this._task.tags,
-                      textFieldStyler: TextFieldStyler(icon: Icon(Icons.tag)),
-                      tagsStyler: TagsStyler(),
-                      onTag: (String tag) {
-                        this._tags.add(tag);
-                      },
-                      onDelete: (String tag) {
-                        //This gives you the tag that was deleted
-                        //print(tag)
-                      },
-                      validator: (String? tag) {
-                        if (tag!.length > _MAX_LENGTH_TAG) {
-                          return "The tag must less than $_MAX_LENGTH_TAG characters";
-                        }
-                      })),
+                initialTags: this._task.tags,
+                textFieldStyler: TextFieldStyler(icon: Icon(Icons.tag)),
+                tagsStyler: TagsStyler(),
+                validator: (String? tag) {
+                  if (tag!.length > _MAX_LENGTH_TAG) {
+                    return "The tag must less than $_MAX_LENGTH_TAG characters";
+                  }
+                },
+                onTag: (String tag) {
+                  this._tags.add(tag);
+                },
+                onDelete: (String tag) {
+                  this._tags.remove(tag);
+                },
+              )),
               SizedBox(
                 height: 40,
               ),

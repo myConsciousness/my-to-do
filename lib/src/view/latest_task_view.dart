@@ -40,7 +40,8 @@ class _State extends State<LatestTaskListView> {
             tooltip: _Text.ACTION_TOOLTIP_NEW_TASK,
             onPressed: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AddNewTaskView()));
+                      MaterialPageRoute(builder: (context) => AddNewTaskView()))
+                  .then((value) => super.setState(() {}));
             },
           ),
           SizedBox(
@@ -110,9 +111,10 @@ class _State extends State<LatestTaskListView> {
                   child: const Icon(Icons.edit),
                   onPressed: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => EditTaskView(task)));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditTaskView(task)))
+                        .then((value) => super.setState(() {}));
                   },
                 ),
                 const SizedBox(width: 7),

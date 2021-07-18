@@ -89,6 +89,8 @@ class _State extends State<AddNewTaskView> {
 
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('Added Task!')));
+
+            Navigator.of(context).pop();
           },
         ),
       ]),
@@ -134,20 +136,20 @@ class _State extends State<AddNewTaskView> {
               SizedBox(height: 8),
               Flexible(
                   child: TextFieldTags(
-                      textFieldStyler: TextFieldStyler(icon: Icon(Icons.tag)),
-                      tagsStyler: TagsStyler(),
-                      onTag: (String tag) {
-                        this._tags.add(tag);
-                      },
-                      onDelete: (String tag) {
-                        //This gives you the tag that was deleted
-                        //print(tag)
-                      },
-                      validator: (String? tag) {
-                        if (tag!.length > _MAX_LENGTH_TAG) {
-                          return "The tag must less than $_MAX_LENGTH_TAG characters";
-                        }
-                      })),
+                textFieldStyler: TextFieldStyler(icon: Icon(Icons.tag)),
+                tagsStyler: TagsStyler(),
+                validator: (String? tag) {
+                  if (tag!.length > _MAX_LENGTH_TAG) {
+                    return "The tag must less than $_MAX_LENGTH_TAG characters";
+                  }
+                },
+                onTag: (String tag) {
+                  this._tags.add(tag);
+                },
+                onDelete: (String tag) {
+                  this._tags.remove(tag);
+                },
+              )),
               SizedBox(
                 height: 40,
               ),

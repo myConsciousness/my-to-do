@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:mytodo/src/config/application_text.dart';
 
 class TagView extends StatefulWidget {
   @override
@@ -12,12 +11,17 @@ class TagView extends StatefulWidget {
   }
 }
 
+class _Text {
+  /// The app bar title
+  static const String APP_BAR_TITLE = 'Tag';
+}
+
 class _State extends State<TagView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(ApplicationText.APP_NAME),
+        title: Text(_Text.APP_BAR_TITLE),
       ),
       body: Text('Tag'),
     );
