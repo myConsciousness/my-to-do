@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:mytodo/src/command/command_exporter.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 
@@ -44,22 +43,59 @@ class _State extends State<HistoryView> {
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         ListTile(
           leading: Icon(this._getHistoryIcon(task)),
-          title: Text(task.id.toString()),
-          subtitle: Text(task.completed.toString() + task.deleted.toString()),
+          title: Text(task.name),
+          subtitle: Text(task.remarks),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
           TextButton(
             child: const Icon(Icons.undo),
             onPressed: () {
+              if (task.completed) {
+                task.completed = false;
+              } else {
+                task.deleted = false;
+              }
+
+              super.setState(() {
+                TaskService.getInstance().update(task);
+              });
+
               ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Incompleted!')));
+                  .showSnackBar(const SnackBar(content: Text('Undo Task!')));
             },
           ),
           TextButton(
             child: const Icon(Icons.delete_forever),
             onPressed: () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Deleted!')));
+              showDialog(
+                context: context,
+                builder: (_) {
+                  return AlertDialog(
+                    title: Text("Delete Task"),
+                    content: Text(
+                        "Delete this task data. Once the data is deleted, it cannot be restored. Are you sure you want to delete?"),
+                    actions: <Widget>[
+                      TextButton(
+                        child: Text("Cancel"),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      TextButton(
+                        child: Text("OK"),
+                        onPressed: () {
+                          super.setState(() {
+                            TaskService.getInstance().delete(task);
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Deleted Task!')));
+
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           )
         ])
