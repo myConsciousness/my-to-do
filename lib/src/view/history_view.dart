@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/command/command_exporter.dart';
+import 'package:mytodo/src/repository/model/task_model.dart';
+import 'package:mytodo/src/repository/service/task_service.dart';
 
 class HistoryView extends StatefulWidget {
   @override
@@ -22,36 +24,47 @@ class _State extends State<HistoryView> {
       appBar: AppBar(
         title: Text(_Text.APP_BAR_TITLE),
       ),
-      body: Command.of(CommandType.GET_TASK_HISTORY).execute());
-}
+      body: Container(
+          child: FutureBuilder(
+        future: TaskService.getInstance().findCompletedOrDeleted(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-class DataSearch extends SearchDelegate<String> {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [IconButton(onPressed: () {}, icon: Icon(Icons.clear))];
-  }
+          return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                return this._buildTaskCard(context, snapshot.data[index]);
+              });
+        },
+      )));
 
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () {},
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation));
-  }
+  Card _buildTaskCard(BuildContext context, Task task) => Card(
+          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        ListTile(
+          leading: Icon(this._getHistoryIcon(task)),
+          title: Text(task.id.toString()),
+          subtitle: Text(task.completed.toString() + task.deleted.toString()),
+        ),
+        Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+          TextButton(
+            child: const Icon(Icons.undo),
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Incompleted!')));
+            },
+          ),
+          TextButton(
+            child: const Icon(Icons.delete_forever),
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Deleted!')));
+            },
+          )
+        ])
+      ]));
 
-  @override
-  Widget buildResults(BuildContext context) {
-    return IconButton(
-        onPressed: () {},
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation));
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return IconButton(
-        onPressed: () {},
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation));
-  }
+  IconData _getHistoryIcon(Task task) =>
+      task.completed ? Icons.done : Icons.delete;
 }

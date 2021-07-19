@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:mytodo/src/config/application_text.dart';
 import 'package:mytodo/src/view/favorited_task_view.dart';
 import 'package:mytodo/src/view/history_view.dart';
-import 'package:mytodo/src/view/setting_view.dart';
-import 'package:mytodo/src/view/tag_view.dart';
 import 'package:mytodo/src/view/latest_task_view.dart';
 
 void main() => runApp(MyToDo());
@@ -17,14 +15,13 @@ class MyToDo extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData.dark(),
         home: DefaultTabController(
-          length: 4,
+          length: 3,
           child: Scaffold(
             appBar: AppBar(
               bottom: TabBar(
                 tabs: [
                   Tab(icon: Icon(Icons.list)),
                   Tab(icon: Icon(Icons.star)),
-                  Tab(icon: Icon(Icons.tag)),
                   Tab(icon: Icon(Icons.history))
                 ],
               ),
@@ -34,7 +31,6 @@ class MyToDo extends StatelessWidget {
               children: [
                 LatestTaskListView(),
                 FavoritedTaskListView(),
-                TagView(),
                 HistoryView()
               ],
             ),
