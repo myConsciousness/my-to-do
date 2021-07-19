@@ -122,7 +122,11 @@ class _State extends State<LatestTaskListView> {
                   child: const Icon(Icons.done),
                   onPressed: () {
                     task.completed = true;
-                    TaskService.getInstance().update(task);
+
+                    super.setState(() {
+                      TaskService.getInstance().update(task);
+                    });
+
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Completed!')));
                   },
@@ -132,7 +136,11 @@ class _State extends State<LatestTaskListView> {
                   child: const Icon(Icons.delete),
                   onPressed: () {
                     task.deleted = true;
-                    TaskService.getInstance().update(task);
+
+                    super.setState(() {
+                      TaskService.getInstance().update(task);
+                    });
+
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Deleted!')));
                   },
