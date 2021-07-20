@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
+import 'package:mytodo/src/view/widget/info_snackbar.dart';
 
 class HistoryView extends StatefulWidget {
   @override
@@ -60,8 +61,7 @@ class _State extends State<HistoryView> {
                 TaskService.getInstance().update(task);
               });
 
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Undo Task!')));
+              InfoSnackbar.from(context).show(content: 'Undo Task!');
             },
           ),
           TextButton(
@@ -69,7 +69,7 @@ class _State extends State<HistoryView> {
             onPressed: () {
               showDialog(
                 context: context,
-                builder: (_) {
+                builder: (context) {
                   return AlertDialog(
                     title: Text("Delete Task"),
                     content: Text(
@@ -86,8 +86,8 @@ class _State extends State<HistoryView> {
                             TaskService.getInstance().delete(task);
                           });
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Deleted Task!')));
+                          InfoSnackbar.from(context)
+                              .show(content: 'Deleted Task!');
 
                           Navigator.pop(context);
                         },

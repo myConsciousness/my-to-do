@@ -9,6 +9,7 @@ import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 import 'package:mytodo/src/view/add_new_task_view.dart';
 import 'package:mytodo/src/view/edit_task_view.dart';
+import 'package:mytodo/src/view/widget/info_snackbar.dart';
 
 class LatestTaskListView extends StatefulWidget {
   @override
@@ -26,7 +27,7 @@ class _Text {
 }
 
 class _State extends State<LatestTaskListView> {
-  final TaskService taskService = TaskService.getInstance();
+  final TaskService _taskService = TaskService.getInstance();
 
   final DateFormat _datetimeFormat = new DateFormat('yyyy/MM/dd HH:mm');
 
@@ -51,7 +52,7 @@ class _State extends State<LatestTaskListView> {
       ),
       body: Container(
           child: FutureBuilder(
-        future: this.taskService.findNotCompletedAndNotDeleted(),
+        future: this._taskService.findNotCompletedAndNotDeleted(),
         builder: (context, AsyncSnapshot snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
@@ -82,7 +83,7 @@ class _State extends State<LatestTaskListView> {
                 task.favorited = !task.favorited;
 
                 super.setState(() {
-                  this.taskService.update(task);
+                  this._taskService.update(task);
                 });
               },
             ),
@@ -98,12 +99,52 @@ class _State extends State<LatestTaskListView> {
                   SizedBox(
                     width: 72,
                   ),
-                  Text(
-                    task.hasDeadline
-                        ? this._datetimeFormat.format(task.deadline)
-                        : '',
-                    style: TextStyle(fontSize: 12),
-                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                            Icons.schedule,
+                            size: 12,
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            task.hasDeadline
+                                ? this._datetimeFormat.format(task.deadline)
+                                : '',
+                            style: TextStyle(fontSize: 10),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Icon(
+                            Icons.tag,
+                            size: 12,
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            task.tags.isNotEmpty ? task.tags.join(' ') : '',
+                            style: TextStyle(fontSize: 10),
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
                 ],
               ),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
@@ -127,8 +168,7 @@ class _State extends State<LatestTaskListView> {
                       TaskService.getInstance().update(task);
                     });
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Completed!')));
+                    InfoSnackbar.from(context).show(content: 'Completed!');
                   },
                 ),
                 const SizedBox(width: 7),
@@ -141,8 +181,7 @@ class _State extends State<LatestTaskListView> {
                       TaskService.getInstance().update(task);
                     });
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Deleted!')));
+                    InfoSnackbar.from(context).show(content: 'Deleted!');
                   },
                 ),
                 const SizedBox(width: 7),
@@ -152,35 +191,4 @@ class _State extends State<LatestTaskListView> {
 
   IconData _getPriorityIcon(Priority? priority) =>
       priority == Priority.LOW ? Icons.low_priority : Icons.priority_high;
-}
-
-class DataSearch extends SearchDelegate<String> {
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [IconButton(onPressed: () {}, icon: Icon(Icons.clear))];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-        onPressed: () {},
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation));
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return IconButton(
-        onPressed: () {},
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation));
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return IconButton(
-        onPressed: () {},
-        icon: AnimatedIcon(
-            icon: AnimatedIcons.arrow_menu, progress: transitionAnimation));
-  }
 }

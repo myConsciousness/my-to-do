@@ -8,9 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
-import 'package:mytodo/src/view/widget/tags_styler.dart';
-import 'package:mytodo/src/view/widget/text_field_style.dart';
-import 'package:mytodo/src/view/widget/text_field_tags.dart';
+import 'package:mytodo/src/view/widget/info_snackbar.dart';
+import 'package:textfield_tags/textfield_tags.dart';
 
 class EditTaskView extends StatefulWidget {
   /// The task to be edited
@@ -43,7 +42,10 @@ class _State extends State<EditTaskView> {
   static const int _MAX_LENGTH_REMARKS = 100;
 
   /// The max length of tag
-  static const int _MAX_LENGTH_TAG = 15;
+  static const int _MAX_LENGTH_TAG = 7;
+
+  /// The max tag counts
+  static const int _MAX_TAGS = 2;
 
   final DateTime _now = DateTime.now();
   final DateFormat _dateFormat = new DateFormat('yyyy/MM/dd');
@@ -110,8 +112,7 @@ class _State extends State<EditTaskView> {
                 createdAt: this._task.createdAt,
                 updatedAt: DateTime.now()));
 
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Updated Task!')));
+            InfoSnackbar.from(context).show(content: 'Updated Task!');
           },
         ),
       ]),
@@ -158,11 +159,18 @@ class _State extends State<EditTaskView> {
               Flexible(
                   child: TextFieldTags(
                 initialTags: this._task.tags,
-                textFieldStyler: TextFieldStyler(icon: Icon(Icons.tag)),
+                textFieldStyler: TextFieldStyler(
+                    hintText: 'Enter tags',
+                    helperText: '',
+                    icon: Icon(Icons.tag)),
                 tagsStyler: TagsStyler(),
                 validator: (String? tag) {
                   if (tag!.length > _MAX_LENGTH_TAG) {
                     return "The tag must less than $_MAX_LENGTH_TAG characters";
+                  }
+
+                  if (this._tags.length >= _MAX_TAGS) {
+                    return "The tag count must less than $_MAX_TAGS";
                   }
                 },
                 onTag: (String tag) {
