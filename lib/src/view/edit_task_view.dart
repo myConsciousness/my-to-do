@@ -78,6 +78,8 @@ class _State extends State<EditTaskView> {
     this._selectedTimeStr = this._task.hasDeadline
         ? this._timeFormat.format(this._task.deadline)
         : '';
+    this._selectedDate = this._task.deadline;
+    this._selectedTime = this._task.deadline;
     this._priority = this._task.priority;
 
     this._taskNameController.addListener(() => super.setState(() {
@@ -96,6 +98,11 @@ class _State extends State<EditTaskView> {
           icon: const Icon(Icons.check),
           tooltip: _Text.ACTION_TOOLTIP_DONE,
           onPressed: () {
+            if (this._taskNameController.text == '') {
+              this._showInputErrorDialog('Task Name');
+              return;
+            }
+
             TaskService.getInstance().update(Task.from(
                 id: this._task.id,
                 name: this._taskNameController.text,
@@ -113,6 +120,8 @@ class _State extends State<EditTaskView> {
                 updatedAt: DateTime.now()));
 
             InfoSnackbar.from(context).show(content: 'Updated Task!');
+
+            Navigator.of(context).pop();
           },
         ),
       ]),
@@ -275,4 +284,30 @@ class _State extends State<EditTaskView> {
               ),
             ],
           )));
+
+  void _showInputErrorDialog(String itemName) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.dangerous),
+              SizedBox(
+                width: 5,
+              ),
+              Text("Input error"),
+            ],
+          ),
+          content: Text("The $itemName is required."),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

@@ -31,7 +31,7 @@ class _State extends State<HistoryView> {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
           }
-
+          context.findAncestorStateOfType();
           return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {

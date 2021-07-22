@@ -74,6 +74,11 @@ class _State extends State<AddNewTaskView> {
           icon: const Icon(Icons.check),
           tooltip: _Text.ACTION_TOOLTIP_DONE,
           onPressed: () {
+            if (this._taskNameController.text == '') {
+              this._showInputErrorDialog('Task Name');
+              return;
+            }
+
             TaskService.getInstance().insert(Task.from(
                 name: this._taskNameController.text,
                 remarks: this._remarksController.text,
@@ -110,7 +115,7 @@ class _State extends State<AddNewTaskView> {
                 controller: this._taskNameController,
                 decoration: InputDecoration(
                   icon: Icon(Icons.task),
-                  labelText: "Task Name",
+                  labelText: "Task Name (required)",
                   hintText: "New task name",
                   counterText:
                       "${_MAX_LENGTH_TASK_NAME - this._taskNameController.text.length} / $_MAX_LENGTH_TASK_NAME",
@@ -253,4 +258,30 @@ class _State extends State<AddNewTaskView> {
               ),
             ],
           )));
+
+  void _showInputErrorDialog(String itemName) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.dangerous),
+              SizedBox(
+                width: 5,
+              ),
+              Text("Input error"),
+            ],
+          ),
+          content: Text("The $itemName is required."),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK"),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

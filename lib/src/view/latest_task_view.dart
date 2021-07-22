@@ -3,13 +3,16 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
+import 'package:mytodo/src/admob/ad_state.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 import 'package:mytodo/src/view/add_new_task_view.dart';
 import 'package:mytodo/src/view/edit_task_view.dart';
 import 'package:mytodo/src/view/widget/info_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class LatestTaskListView extends StatefulWidget {
   @override
@@ -31,6 +34,24 @@ class _State extends State<LatestTaskListView> {
 
   final DateFormat _datetimeFormat = new DateFormat('yyyy/MM/dd HH:mm');
 
+  late BannerAd banner;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final adState = Provider.of<AdState>(context);
+    adState.initialization.then((status) {
+      setState(() {
+        banner = BannerAd(
+          adUnitId: adState.bannerAdUnitId,
+          size: AdSize.banner,
+          request: AdRequest(),
+          listener: BannerAdListener(),
+        )..load();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
@@ -45,26 +66,26 @@ class _State extends State<LatestTaskListView> {
                   .then((value) => super.setState(() {}));
             },
           ),
-          SizedBox(
-            width: 19,
-          )
         ],
       ),
       body: Container(
-          child: FutureBuilder(
-        future: this._taskService.findNotCompletedAndNotDeleted(),
-        builder: (context, AsyncSnapshot snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
+          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+        AdWidget(ad: banner),
+        FutureBuilder(
+          future: this._taskService.findNotCompletedAndNotDeleted(),
+          builder: (context, AsyncSnapshot snapshot) {
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            }
 
-          return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return this._buildTaskCard(context, snapshot.data[index]);
-              });
-        },
-      )));
+            return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return this._buildTaskCard(context, snapshot.data[index]);
+                });
+          },
+        )
+      ])));
 
   Card _buildTaskCard(BuildContext context, Task task) => Card(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
