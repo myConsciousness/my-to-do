@@ -14,12 +14,19 @@ import 'package:provider/provider.dart';
 
 import 'src/l10n/app_localizations.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final Future<InitializationStatus> initStatus =
+      MobileAds.instance.initialize();
+  final AdState adState = AdState.from(initialization: initStatus);
 
   runApp(Provider.value(
-    value: AdState(MobileAds.instance.initialize()),
-    builder: (context, child) => MyToDo(),
+    value: adState,
+    builder: (
+      context,
+      child,
+    ) =>
+        MyToDo(),
   ));
 }
 
@@ -46,6 +53,7 @@ class _State extends State<MyToDo> {
           const Locale('jp'),
         ],
         locale: this._locale,
+        debugShowCheckedModeBanner: false,
         theme: ThemeData.dark(),
         home: DefaultTabController(
           length: 3,

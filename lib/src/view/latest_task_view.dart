@@ -34,22 +34,23 @@ class _State extends State<LatestTaskListView> {
 
   final DateFormat _datetimeFormat = new DateFormat('yyyy/MM/dd HH:mm');
 
-  late BannerAd banner;
+  BannerAd? _bannerAd;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final adState = Provider.of<AdState>(context);
-    adState.initialization.then((status) {
-      setState(() {
-        banner = BannerAd(
-          adUnitId: adState.bannerAdUnitId,
-          size: AdSize.banner,
-          request: AdRequest(),
-          listener: BannerAdListener(),
-        )..load();
-      });
-    });
+
+    final AdState adState = Provider.of<AdState>(context);
+    adState.initialization.then((status) => () {
+          super.setState(() {
+            this._bannerAd = BannerAd(
+              size: AdSize.banner,
+              adUnitId: adState.bannerAdUnitId,
+              listener: BannerAdListener(),
+              request: AdRequest(),
+            )..load();
+          });
+        });
   }
 
   @override
@@ -69,23 +70,43 @@ class _State extends State<LatestTaskListView> {
         ],
       ),
       body: Container(
-          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-        AdWidget(ad: banner),
-        FutureBuilder(
-          future: this._taskService.findNotCompletedAndNotDeleted(),
-          builder: (context, AsyncSnapshot snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            }
+          child: Column(
+        children: [
+          if (this._bannerAd == null)
+            SizedBox(
+              height: 50,
+            )
+          else
+            Container(
+              height: 50,
+              child: AdWidget(ad: this._bannerAd!),
+            ),
+          Expanded(
+              child: FutureBuilder(
+            future: this._taskService.findNotCompletedAndNotDeleted(),
+            builder: (context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-            return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return this._buildTaskCard(context, snapshot.data[index]);
-                });
-          },
-        )
-      ])));
+              return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return this._buildTaskCard(context, snapshot.data[index]);
+                  });
+            },
+          )),
+          if (this._bannerAd == null)
+            SizedBox(
+              height: 50,
+            )
+          else
+            Container(
+              height: 50,
+              child: AdWidget(ad: this._bannerAd!),
+            ),
+        ],
+      )));
 
   Card _buildTaskCard(BuildContext context, Task task) => Card(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
