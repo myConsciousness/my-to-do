@@ -4,11 +4,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
+import 'package:mytodo/src/admob/ad_state.dart';
+import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 import 'package:mytodo/src/view/widget/info_snackbar.dart';
+import 'package:provider/provider.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class EditTaskView extends StatefulWidget {
@@ -64,6 +68,8 @@ class _State extends State<EditTaskView> {
 
   Priority _priority = Priority.LOW;
 
+  BannerAd? _bannerAd;
+
   @override
   void initState() {
     super.initState();
@@ -82,54 +88,80 @@ class _State extends State<EditTaskView> {
     this._selectedTime = this._task.deadline;
     this._priority = this._task.priority;
 
-    this._taskNameController.addListener(() => super.setState(() {
-          this._taskNameController.text;
-        }));
-    this._remarksController.addListener(() => super.setState(() {
-          this._remarksController.text;
-        }));
+    this._taskNameController.addListener(
+          () => super.setState(
+            () {
+              this._taskNameController.text;
+            },
+          ),
+        );
+    this._remarksController.addListener(
+          () => super.setState(
+            () {
+              this._remarksController.text;
+            },
+          ),
+        );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final AdState adState = Provider.of<AdState>(context);
+    adState.initialization.then((status) => () {
+          super.setState(() {
+            this._bannerAd = BannerAd(
+              size: AdSize.banner,
+              adUnitId: adState.bannerAdUnitId,
+              listener: BannerAdListener(),
+              request: AdRequest(),
+            )..load();
+          });
+        });
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text(_Text.APP_BAR_TITLE), actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.check),
-          tooltip: _Text.ACTION_TOOLTIP_DONE,
-          onPressed: () {
-            if (this._taskNameController.text == '') {
-              this._showInputErrorDialog('Task Name');
-              return;
-            }
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(title: Text(_Text.APP_BAR_TITLE), actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.check),
+            tooltip: _Text.ACTION_TOOLTIP_DONE,
+            onPressed: () {
+              if (this._taskNameController.text == '') {
+                this._showInputErrorDialog('Task Name');
+                return;
+              }
 
-            TaskService.getInstance().update(Task.from(
-                id: this._task.id,
-                name: this._taskNameController.text,
-                remarks: this._remarksController.text,
-                tags: this._tags,
-                priority: this._priority,
-                hasDeadline: this._dateSelected,
-                deadline: DateTime(
-                    this._selectedDate.year,
-                    this._selectedDate.month,
-                    this._selectedDate.day,
-                    this._selectedTime.hour,
-                    this._selectedTime.minute),
-                createdAt: this._task.createdAt,
-                updatedAt: DateTime.now()));
+              TaskService.getInstance().update(Task.from(
+                  id: this._task.id,
+                  name: this._taskNameController.text,
+                  remarks: this._remarksController.text,
+                  tags: this._tags,
+                  priority: this._priority,
+                  hasDeadline: this._dateSelected,
+                  deadline: DateTime(
+                      this._selectedDate.year,
+                      this._selectedDate.month,
+                      this._selectedDate.day,
+                      this._selectedTime.hour,
+                      this._selectedTime.minute),
+                  createdAt: this._task.createdAt,
+                  updatedAt: DateTime.now()));
 
-            InfoSnackbar.from(context).show(content: 'Updated Task!');
+              InfoSnackbar.from(context).show(content: 'Updated Task!');
 
-            Navigator.of(context).pop();
-          },
-        ),
-      ]),
-      body: Container(
+              Navigator.of(context).pop();
+            },
+          ),
+        ]),
+        body: Container(
           padding: EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              AdmobUtils.getBannerAdOrSizedBox(this._bannerAd),
               Text('Task',
                   style: TextStyle(
                     color: Theme.of(context).accentColor,
@@ -169,6 +201,7 @@ class _State extends State<EditTaskView> {
                   child: TextFieldTags(
                 initialTags: this._task.tags,
                 textFieldStyler: TextFieldStyler(
+                    textFieldBorder: UnderlineInputBorder(),
                     hintText: 'Enter tags',
                     helperText: '',
                     icon: Icon(Icons.tag)),
@@ -190,7 +223,7 @@ class _State extends State<EditTaskView> {
                 },
               )),
               SizedBox(
-                height: 40,
+                height: 20,
               ),
               Text('Deadline',
                   style: TextStyle(
@@ -264,26 +297,29 @@ class _State extends State<EditTaskView> {
                     value: Priority.LOW,
                     groupValue: this._priority,
                     onChanged: (Priority? value) {
-                      setState(() {
+                      super.setState(() {
                         this._priority = value!;
                       });
                     },
                   )),
                   Flexible(
-                      child: RadioListTile<Priority>(
-                    title: const Text('High'),
-                    value: Priority.HIGH,
-                    groupValue: this._priority,
-                    onChanged: (Priority? value) {
-                      setState(() {
-                        this._priority = value!;
-                      });
-                    },
-                  )),
+                    child: RadioListTile<Priority>(
+                      title: const Text('High'),
+                      value: Priority.HIGH,
+                      groupValue: this._priority,
+                      onChanged: (Priority? value) {
+                        super.setState(() {
+                          this._priority = value!;
+                        });
+                      },
+                    ),
+                  ),
                 ],
               ),
             ],
-          )));
+          ),
+        ),
+      );
 
   void _showInputErrorDialog(String itemName) {
     showDialog(

@@ -4,11 +4,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
+import 'package:mytodo/src/admob/ad_state.dart';
+import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 import 'package:mytodo/src/view/widget/info_snackbar.dart';
+import 'package:provider/provider.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class AddNewTaskView extends StatefulWidget {
@@ -54,57 +58,92 @@ class _State extends State<AddNewTaskView> {
 
   Priority _priority = Priority.LOW;
 
+  BannerAd? _bannerAd;
+
   @override
   void initState() {
     super.initState();
 
-    this._taskNameController.addListener(() => super.setState(() {
-          this._taskNameController.text;
-        }));
-    this._remarksController.addListener(() => super.setState(() {
-          this._remarksController.text;
-        }));
+    this._taskNameController.addListener(
+          () => super.setState(
+            () {
+              this._taskNameController.text;
+            },
+          ),
+        );
+    this._remarksController.addListener(
+          () => super.setState(
+            () {
+              this._remarksController.text;
+            },
+          ),
+        );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final AdState adState = Provider.of<AdState>(context);
+    adState.initialization.then(
+      (status) => () {
+        super.setState(
+          () {
+            this._bannerAd = BannerAd(
+              size: AdSize.banner,
+              adUnitId: adState.bannerAdUnitId,
+              listener: BannerAdListener(),
+              request: AdRequest(),
+            )..load();
+          },
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(title: Text(_Text.APP_BAR_TITLE), actions: <Widget>[
-        IconButton(
-          icon: const Icon(Icons.check),
-          tooltip: _Text.ACTION_TOOLTIP_DONE,
-          onPressed: () {
-            if (this._taskNameController.text == '') {
-              this._showInputErrorDialog('Task Name');
-              return;
-            }
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(_Text.APP_BAR_TITLE),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.check),
+              tooltip: _Text.ACTION_TOOLTIP_DONE,
+              onPressed: () {
+                if (this._taskNameController.text == '') {
+                  this._showInputErrorDialog('Task Name');
+                  return;
+                }
 
-            TaskService.getInstance().insert(Task.from(
-                name: this._taskNameController.text,
-                remarks: this._remarksController.text,
-                tags: this._tags,
-                priority: this._priority,
-                hasDeadline: this._dateSelected,
-                deadline: DateTime(
-                    this._selectedDate.year,
-                    this._selectedDate.month,
-                    this._selectedDate.day,
-                    this._selectedTime.hour,
-                    this._selectedTime.minute),
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now()));
+                TaskService.getInstance().insert(Task.from(
+                    name: this._taskNameController.text,
+                    remarks: this._remarksController.text,
+                    tags: this._tags,
+                    priority: this._priority,
+                    hasDeadline: this._dateSelected,
+                    deadline: DateTime(
+                        this._selectedDate.year,
+                        this._selectedDate.month,
+                        this._selectedDate.day,
+                        this._selectedTime.hour,
+                        this._selectedTime.minute),
+                    createdAt: DateTime.now(),
+                    updatedAt: DateTime.now()));
 
-            InfoSnackbar.from(context).show(content: 'Added Task!');
+                InfoSnackbar.from(context).show(content: 'Added Task!');
 
-            Navigator.of(context).pop();
-          },
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         ),
-      ]),
-      body: Container(
+        body: Container(
           padding: EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              AdmobUtils.getBannerAdOrSizedBox(this._bannerAd),
               Text('Task',
                   style: TextStyle(
                     color: Theme.of(context).accentColor,
@@ -143,6 +182,7 @@ class _State extends State<AddNewTaskView> {
               Flexible(
                   child: TextFieldTags(
                 textFieldStyler: TextFieldStyler(
+                    textFieldBorder: UnderlineInputBorder(),
                     hintText: 'Enter tags',
                     helperText: '',
                     icon: Icon(Icons.tag)),
@@ -164,7 +204,7 @@ class _State extends State<AddNewTaskView> {
                 },
               )),
               SizedBox(
-                height: 40,
+                height: 20,
               ),
               Text('Deadline',
                   style: TextStyle(
@@ -257,7 +297,9 @@ class _State extends State<AddNewTaskView> {
                 ],
               ),
             ],
-          )));
+          ),
+        ),
+      );
 
   void _showInputErrorDialog(String itemName) {
     showDialog(
