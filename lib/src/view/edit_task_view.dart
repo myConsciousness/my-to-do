@@ -113,7 +113,7 @@ class _State extends State<EditTaskView> {
           super.setState(() {
             this._bannerAd = BannerAd(
               size: AdSize.banner,
-              adUnitId: adState.bannerAdUnitId,
+              adUnitId: AdState.bannerAdUnitId,
               listener: BannerAdListener(),
               request: AdRequest(),
             )..load();

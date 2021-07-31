@@ -11,7 +11,7 @@ class AdState {
 
   AdState.from({required this.initialization});
 
-  String get appId {
+  static String get appId {
     if (Platform.isAndroid) {
       return "ca-app-pub-7168775731316469~6335456139";
     } else if (Platform.isIOS) {
@@ -21,7 +21,7 @@ class AdState {
     }
   }
 
-  String get bannerAdUnitId {
+  static String get bannerAdUnitId {
     if (Platform.isAndroid) {
       return "ca-app-pub-7168775731316469/1821496055";
     } else if (Platform.isIOS) {
@@ -31,7 +31,7 @@ class AdState {
     }
   }
 
-  String get interstitialAdUnitId {
+  static String get interstitialAdUnitId {
     if (Platform.isAndroid) {
       return "ca-app-pub-7168775731316469/1821496055";
     } else if (Platform.isIOS) {
@@ -41,7 +41,7 @@ class AdState {
     }
   }
 
-  String get rewardedAdUnitId {
+  static String get rewardedAdUnitId {
     if (Platform.isAndroid) {
       return "ca-app-pub-7168775731316469/1821496055";
     } else if (Platform.isIOS) {

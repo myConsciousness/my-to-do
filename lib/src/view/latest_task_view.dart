@@ -35,29 +35,13 @@ class _State extends State<LatestTaskListView> {
 
   final DateFormat _datetimeFormat = DateFormat('yyyy/MM/dd HH:mm');
 
-  final List<dynamic> _tasks = <dynamic>[];
+  List<dynamic> _tasks = <dynamic>[];
 
   BannerAd? _headerBannerAd;
 
   @override
-  void initState() {
-    super.initState();
-    this.loadTaskList();
-  }
-
-  void loadTaskList() async {
-    await this._taskService.findNotCompletedAndNotDeleted().then(
-          (List<Task> internalTasks) => internalTasks.forEach(
-            (Task internalTask) => this._tasks.add(internalTask),
-          ),
-        );
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    print("test" + this._tasks.toString());
 
     final AdState adState = Provider.of<AdState>(context);
     adState.initialization.then(
@@ -67,27 +51,20 @@ class _State extends State<LatestTaskListView> {
             // Loads header banner ad
             this._headerBannerAd = BannerAd(
               size: AdSize.banner,
-              adUnitId: adState.bannerAdUnitId,
+              adUnitId: AdState.bannerAdUnitId,
               listener: BannerAdListener(),
               request: AdRequest(),
             )..load();
-
-            // Loads banner ads in the list
-            for (int i = this._tasks.length - 2; i >= 1; i -= 10) {
-              this._tasks.insert(
-                    i,
-                    BannerAd(
-                      size: AdSize.banner,
-                      adUnitId: adState.bannerAdUnitId,
-                      listener: BannerAdListener(),
-                      request: AdRequest(),
-                    )..load(),
-                  );
-            }
           },
         );
       },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    this._headerBannerAd?.dispose();
   }
 
   @override
@@ -113,23 +90,25 @@ class _State extends State<LatestTaskListView> {
             children: [
               AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
               Expanded(
-                child: ListView.builder(
-                  itemCount: this._tasks.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    dynamic element = this._tasks[index];
-
-                    if (element is Task) {
-                      return this._buildTaskCard(context, element);
+                child: FutureBuilder(
+                  future: this
+                      ._taskService
+                      .findFavoritedAndNotCompletedAndNotDeleted(),
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
                     }
 
-                    return Container(
-                      height: 50,
-                      color: Colors.black,
-                      child: AdWidget(ad: element),
-                    );
+                    return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return this
+                              ._buildTaskCard(context, snapshot.data[index]);
+                        });
                   },
                 ),
-              )
+              ),
+              AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
             ],
           ),
         ),

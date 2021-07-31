@@ -43,7 +43,7 @@ class _State extends State<FavoritedTaskListView> {
           () {
             this._bannerAd = BannerAd(
               size: AdSize.banner,
-              adUnitId: adState.bannerAdUnitId,
+              adUnitId: AdState.bannerAdUnitId,
               listener: BannerAdListener(),
               request: AdRequest(),
             )..load();
