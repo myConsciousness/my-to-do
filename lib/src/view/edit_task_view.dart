@@ -7,6 +7,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:mytodo/src/admob/ad_state.dart';
+import 'package:mytodo/src/admob/ad_unit_id.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
@@ -68,7 +69,7 @@ class _State extends State<EditTaskView> {
 
   Priority _priority = Priority.LOW;
 
-  BannerAd? _bannerAd;
+  BannerAd? _headerBannerAd;
 
   @override
   void initState() {
@@ -111,14 +112,20 @@ class _State extends State<EditTaskView> {
     final AdState adState = Provider.of<AdState>(context);
     adState.initialization.then((status) => () {
           super.setState(() {
-            this._bannerAd = BannerAd(
+            this._headerBannerAd = BannerAd(
               size: AdSize.banner,
-              adUnitId: AdState.bannerAdUnitId,
+              adUnitId: AdUnitId.banner,
               listener: BannerAdListener(),
               request: AdRequest(),
             )..load();
           });
         });
+  }
+
+  @override
+  void dispose() {
+    this._headerBannerAd?.dispose();
+    super.dispose();
   }
 
   @override
@@ -161,7 +168,10 @@ class _State extends State<EditTaskView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AdmobUtils.getBannerAdOrSizedBox(this._bannerAd),
+              AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
+              SizedBox(
+                height: 20,
+              ),
               Text('Task',
                   style: TextStyle(
                     color: Theme.of(context).accentColor,
@@ -172,10 +182,10 @@ class _State extends State<EditTaskView> {
                 controller: this._taskNameController,
                 decoration: InputDecoration(
                   icon: Icon(Icons.task),
-                  labelText: "Task Name",
-                  hintText: "New task name",
+                  labelText: 'Task Name',
+                  hintText: 'New task name',
                   counterText:
-                      "${_MAX_LENGTH_TASK_NAME - this._taskNameController.text.length} / $_MAX_LENGTH_TASK_NAME",
+                      '${_MAX_LENGTH_TASK_NAME - this._taskNameController.text.length} / $_MAX_LENGTH_TASK_NAME',
                 ),
               ),
               SizedBox(height: 2),
@@ -184,10 +194,10 @@ class _State extends State<EditTaskView> {
                 controller: this._remarksController,
                 decoration: InputDecoration(
                   icon: Icon(Icons.note),
-                  labelText: "Remarks",
-                  hintText: "About task",
+                  labelText: 'Remarks',
+                  hintText: 'About task',
                   counterText:
-                      "${_MAX_LENGTH_REMARKS - this._remarksController.text.length} / $_MAX_LENGTH_REMARKS",
+                      '${_MAX_LENGTH_REMARKS - this._remarksController.text.length} / $_MAX_LENGTH_REMARKS',
                 ),
               ),
               SizedBox(height: 15),
@@ -198,30 +208,31 @@ class _State extends State<EditTaskView> {
                   )),
               SizedBox(height: 8),
               Flexible(
-                  child: TextFieldTags(
-                initialTags: this._task.tags,
-                textFieldStyler: TextFieldStyler(
-                    textFieldBorder: UnderlineInputBorder(),
-                    hintText: 'Enter tags',
-                    helperText: '',
-                    icon: Icon(Icons.tag)),
-                tagsStyler: TagsStyler(),
-                validator: (String? tag) {
-                  if (tag!.length > _MAX_LENGTH_TAG) {
-                    return "The tag must less than $_MAX_LENGTH_TAG characters";
-                  }
+                child: TextFieldTags(
+                  initialTags: this._task.tags,
+                  textFieldStyler: TextFieldStyler(
+                      textFieldBorder: UnderlineInputBorder(),
+                      hintText: 'Enter tags',
+                      helperText: '',
+                      icon: Icon(Icons.tag)),
+                  tagsStyler: TagsStyler(),
+                  validator: (String? tag) {
+                    if (tag!.length > _MAX_LENGTH_TAG) {
+                      return 'The tag must less than $_MAX_LENGTH_TAG characters';
+                    }
 
-                  if (this._tags.length >= _MAX_TAGS) {
-                    return "The tag count must less than $_MAX_TAGS";
-                  }
-                },
-                onTag: (String tag) {
-                  this._tags.add(tag);
-                },
-                onDelete: (String tag) {
-                  this._tags.remove(tag);
-                },
-              )),
+                    if (this._tags.length >= _MAX_TAGS) {
+                      return 'The tag count must less than $_MAX_TAGS';
+                    }
+                  },
+                  onTag: (String tag) {
+                    this._tags.add(tag);
+                  },
+                  onDelete: (String tag) {
+                    this._tags.remove(tag);
+                  },
+                ),
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -241,8 +252,8 @@ class _State extends State<EditTaskView> {
                         TextEditingController(text: this._selectedDateStr),
                     decoration: InputDecoration(
                         icon: Icon(Icons.date_range),
-                        labelText: "Date",
-                        hintText: "Select date"),
+                        labelText: 'Date',
+                        hintText: 'Select date'),
                     onTap: () {
                       DatePicker.showDatePicker(context,
                           showTitleActions: true,
@@ -266,8 +277,8 @@ class _State extends State<EditTaskView> {
                         TextEditingController(text: this._selectedTimeStr),
                     decoration: InputDecoration(
                         icon: Icon(Icons.watch),
-                        labelText: "Time",
-                        hintText: "Select time"),
+                        labelText: 'Time',
+                        hintText: 'Select time'),
                     onTap: () {
                       DatePicker.showTimePicker(context, showTitleActions: true,
                           onConfirm: (DateTime time) {
@@ -332,13 +343,13 @@ class _State extends State<EditTaskView> {
               SizedBox(
                 width: 5,
               ),
-              Text("Input error"),
+              Text('Input error'),
             ],
           ),
-          content: Text("The $itemName is required."),
+          content: Text('The $itemName is required.'),
           actions: <Widget>[
             TextButton(
-              child: Text("OK"),
+              child: Text('OK'),
               onPressed: () => Navigator.pop(context),
             ),
           ],

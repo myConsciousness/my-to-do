@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:mytodo/src/admob/ad_state.dart';
+import 'package:mytodo/src/admob/ad_unit_id.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
@@ -35,9 +36,9 @@ class _State extends State<LatestTaskListView> {
 
   final DateFormat _datetimeFormat = DateFormat('yyyy/MM/dd HH:mm');
 
-  List<dynamic> _tasks = <dynamic>[];
-
   BannerAd? _headerBannerAd;
+
+  BannerAd? _footerBannerAd;
 
   @override
   void didChangeDependencies() {
@@ -51,7 +52,15 @@ class _State extends State<LatestTaskListView> {
             // Loads header banner ad
             this._headerBannerAd = BannerAd(
               size: AdSize.banner,
-              adUnitId: AdState.bannerAdUnitId,
+              adUnitId: AdUnitId.banner,
+              listener: BannerAdListener(),
+              request: AdRequest(),
+            )..load();
+
+            // Loads footer banner ad
+            this._footerBannerAd = BannerAd(
+              size: AdSize.banner,
+              adUnitId: AdUnitId.banner,
               listener: BannerAdListener(),
               request: AdRequest(),
             )..load();
@@ -63,8 +72,9 @@ class _State extends State<LatestTaskListView> {
 
   @override
   void dispose() {
-    super.dispose();
     this._headerBannerAd?.dispose();
+    this._footerBannerAd?.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,11 +86,9 @@ class _State extends State<LatestTaskListView> {
               icon: const Icon(Icons.add),
               tooltip: _Text.ACTION_TOOLTIP_NEW_TASK,
               onPressed: () {
-                Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddNewTaskView()))
-                    .then((value) => super.setState(() {}));
+                Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => AddNewTaskView()))
+                    .then((_) => super.setState(() {}));
               },
             ),
           ],
@@ -91,9 +99,7 @@ class _State extends State<LatestTaskListView> {
               AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
               Expanded(
                 child: FutureBuilder(
-                  future: this
-                      ._taskService
-                      .findFavoritedAndNotCompletedAndNotDeleted(),
+                  future: this._taskService.findNotCompletedAndNotDeleted(),
                   builder: (context, AsyncSnapshot snapshot) {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
@@ -108,7 +114,7 @@ class _State extends State<LatestTaskListView> {
                   },
                 ),
               ),
-              AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
+              AdmobUtils.getBannerAdOrSizedBox(this._footerBannerAd),
             ],
           ),
         ),

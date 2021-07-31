@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:mytodo/src/admob/ad_state.dart';
+import 'package:mytodo/src/admob/ad_unit_id.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
@@ -30,7 +31,9 @@ class _State extends State<FavoritedTaskListView> {
 
   final DateFormat _datetimeFormat = DateFormat('yyyy/MM/dd HH:mm');
 
-  BannerAd? _bannerAd;
+  BannerAd? _headerBannerAd;
+
+  BannerAd? _footerBannerAd;
 
   @override
   void didChangeDependencies() {
@@ -38,12 +41,21 @@ class _State extends State<FavoritedTaskListView> {
 
     final AdState adState = Provider.of<AdState>(context);
     adState.initialization.then(
-      (status) => () {
+      (InitializationStatus status) => () {
         super.setState(
           () {
-            this._bannerAd = BannerAd(
+            // Loads header banner ad
+            this._headerBannerAd = BannerAd(
               size: AdSize.banner,
-              adUnitId: AdState.bannerAdUnitId,
+              adUnitId: AdUnitId.banner,
+              listener: BannerAdListener(),
+              request: AdRequest(),
+            )..load();
+
+            // Loads footer banner ad
+            this._footerBannerAd = BannerAd(
+              size: AdSize.banner,
+              adUnitId: AdUnitId.banner,
               listener: BannerAdListener(),
               request: AdRequest(),
             )..load();
@@ -54,6 +66,13 @@ class _State extends State<FavoritedTaskListView> {
   }
 
   @override
+  void dispose() {
+    this._headerBannerAd?.dispose();
+    this._footerBannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: Text(_Text.APP_BAR_TITLE),
@@ -61,7 +80,7 @@ class _State extends State<FavoritedTaskListView> {
         body: Container(
           child: Column(
             children: <Widget>[
-              AdmobUtils.getBannerAdOrSizedBox(this._bannerAd),
+              AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
               Expanded(
                 child: FutureBuilder(
                   future: this
@@ -81,7 +100,7 @@ class _State extends State<FavoritedTaskListView> {
                   },
                 ),
               ),
-              AdmobUtils.getBannerAdOrSizedBox(this._bannerAd),
+              AdmobUtils.getBannerAdOrSizedBox(this._footerBannerAd),
             ],
           ),
         ),

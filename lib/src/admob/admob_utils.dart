@@ -6,16 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdmobUtils {
-  /// The banner height
-  static const double _BANNER_HEIGHT = 50;
-
   static Widget getBannerAdOrSizedBox(BannerAd? bannerAd) {
     if (bannerAd == null) {
-      return SizedBox(height: _BANNER_HEIGHT);
+      return CircularProgressIndicator();
     }
 
     return Container(
-      height: _BANNER_HEIGHT,
+      height: 50,
       child: AdWidget(ad: bannerAd),
     );
   }

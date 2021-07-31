@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mytodo/src/admob/ad_state.dart';
+import 'package:mytodo/src/admob/ad_unit_id.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
@@ -23,23 +24,45 @@ class _Text {
 }
 
 class _State extends State<HistoryView> {
-  BannerAd? _bannerAd;
+  BannerAd? _headerBannerAd;
+
+  BannerAd? _footerBannerAd;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     final AdState adState = Provider.of<AdState>(context);
-    adState.initialization.then((status) => () {
-          super.setState(() {
-            this._bannerAd = BannerAd(
+    adState.initialization.then(
+      (InitializationStatus status) => () {
+        super.setState(
+          () {
+            // Loads header banner ad
+            this._headerBannerAd = BannerAd(
               size: AdSize.banner,
-              adUnitId: AdState.bannerAdUnitId,
+              adUnitId: AdUnitId.banner,
               listener: BannerAdListener(),
               request: AdRequest(),
             )..load();
-          });
-        });
+
+            // Loads footer banner ad
+            this._footerBannerAd = BannerAd(
+              size: AdSize.banner,
+              adUnitId: AdUnitId.banner,
+              listener: BannerAdListener(),
+              request: AdRequest(),
+            )..load();
+          },
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    this._headerBannerAd?.dispose();
+    this._footerBannerAd?.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,7 +73,7 @@ class _State extends State<HistoryView> {
         body: Container(
           child: Column(
             children: [
-              AdmobUtils.getBannerAdOrSizedBox(this._bannerAd),
+              AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
               Expanded(
                 child: FutureBuilder(
                   future: TaskService.getInstance().findCompletedOrDeleted(),
@@ -68,7 +91,7 @@ class _State extends State<HistoryView> {
                   },
                 ),
               ),
-              AdmobUtils.getBannerAdOrSizedBox(this._bannerAd),
+              AdmobUtils.getBannerAdOrSizedBox(this._footerBannerAd),
             ],
           ),
         ),
