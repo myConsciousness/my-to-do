@@ -80,7 +80,9 @@ class Task {
         id: map[_ColumnName.ID],
         name: map[_ColumnName.NAME],
         remarks: map[_ColumnName.REMARKS],
-        tags: map[_ColumnName.TAG].toString().split(_TAG_DELIMITER),
+        tags: map[_ColumnName.TAG].toString().isNotEmpty
+            ? map[_ColumnName.TAG].toString().split(_TAG_DELIMITER)
+            : [],
         priority: map[_ColumnName.PRIORITY] == 0 ? Priority.LOW : Priority.HIGH,
         hasDeadline: map[_ColumnName.HAS_DEADLINE] == BooleanText.TRUE,
         deadline:
