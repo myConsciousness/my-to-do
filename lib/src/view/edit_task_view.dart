@@ -6,14 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
-import 'package:mytodo/src/admob/ad_state.dart';
 import 'package:mytodo/src/admob/ad_unit_id.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 import 'package:mytodo/src/view/widget/info_snackbar.dart';
-import 'package:provider/provider.dart';
 import 'package:textfield_tags/textfield_tags.dart';
 
 class EditTaskView extends StatefulWidget {
@@ -62,6 +60,7 @@ class _State extends State<EditTaskView> {
   DateTime _selectedDate = DateTime.fromMillisecondsSinceEpoch(0);
   DateTime _selectedTime = DateTime.fromMillisecondsSinceEpoch(0);
 
+  List<String> _initialTags = <String>[];
   List<String> _tags = <String>[];
 
   final TextEditingController _taskNameController = TextEditingController();
@@ -69,7 +68,7 @@ class _State extends State<EditTaskView> {
 
   Priority _priority = Priority.LOW;
 
-  BannerAd? _headerBannerAd;
+  late BannerAd _headerBannerAd;
 
   @override
   void initState() {
@@ -77,6 +76,7 @@ class _State extends State<EditTaskView> {
 
     this._taskNameController.text = this._task.name;
     this._remarksController.text = this._task.remarks;
+    this._initialTags = List.from(this._task.tags);
     this._tags = this._task.tags;
     this._dateSelected = this._task.hasDeadline;
     this._selectedDateStr = this._task.hasDeadline
@@ -103,28 +103,18 @@ class _State extends State<EditTaskView> {
             },
           ),
         );
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    final AdState adState = Provider.of<AdState>(context);
-    adState.initialization.then((status) => () {
-          super.setState(() {
-            this._headerBannerAd = BannerAd(
-              size: AdSize.banner,
-              adUnitId: AdUnitId.banner,
-              listener: BannerAdListener(),
-              request: AdRequest(),
-            )..load();
-          });
-        });
+    this._headerBannerAd = BannerAd(
+      size: AdSize.banner,
+      adUnitId: AdUnitId.banner,
+      listener: BannerAdListener(),
+      request: AdRequest(),
+    )..load();
   }
 
   @override
   void dispose() {
-    this._headerBannerAd?.dispose();
+    this._headerBannerAd.dispose();
     super.dispose();
   }
 
@@ -168,7 +158,7 @@ class _State extends State<EditTaskView> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
+              AdmobUtils.createBannerAdWidget(this._headerBannerAd),
               SizedBox(
                 height: 20,
               ),
@@ -209,7 +199,7 @@ class _State extends State<EditTaskView> {
               SizedBox(height: 8),
               Flexible(
                 child: TextFieldTags(
-                  initialTags: this._task.tags,
+                  initialTags: this._initialTags,
                   textFieldStyler: TextFieldStyler(
                       textFieldBorder: UnderlineInputBorder(),
                       hintText: 'Enter tags',

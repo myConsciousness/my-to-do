@@ -4,8 +4,11 @@
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+/// The class that manages the ad state.
 class AdState {
+  /// The initialization status
   final Future<InitializationStatus> initialization;
 
+  /// Returns the new instance of [AdState] based on the [initialization].
   AdState.from({required this.initialization});
 }

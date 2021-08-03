@@ -14,20 +14,18 @@ import 'package:provider/provider.dart';
 
 import 'src/l10n/app_localizations.dart';
 
-Future<void> main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   final Future<InitializationStatus> initStatus =
       MobileAds.instance.initialize();
   final AdState adState = AdState.from(initialization: initStatus);
 
-  runApp(Provider.value(
-    value: adState,
-    builder: (
-      context,
-      child,
-    ) =>
-        MyToDo(),
-  ));
+  runApp(
+    Provider.value(
+      value: adState,
+      builder: (context, child) => MyToDo(),
+    ),
+  );
 }
 
 class MyToDo extends StatefulWidget {

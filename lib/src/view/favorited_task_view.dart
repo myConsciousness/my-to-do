@@ -3,17 +3,13 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
-import 'package:mytodo/src/admob/ad_state.dart';
-import 'package:mytodo/src/admob/ad_unit_id.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
 import 'package:mytodo/src/view/edit_task_view.dart';
 import 'package:mytodo/src/view/widget/info_snackbar.dart';
-import 'package:provider/provider.dart';
 
 class FavoritedTaskListView extends StatefulWidget {
   @override
@@ -23,7 +19,7 @@ class FavoritedTaskListView extends StatefulWidget {
 }
 
 class _Text {
-  static const String APP_BAR_TITLE = 'Favorited Task';
+  static const String APP_BAR_TITLE = 'Favorite Task';
 }
 
 class _State extends State<FavoritedTaskListView> {
@@ -31,44 +27,18 @@ class _State extends State<FavoritedTaskListView> {
 
   final DateFormat _datetimeFormat = DateFormat('yyyy/MM/dd HH:mm');
 
-  BannerAd? _headerBannerAd;
-
-  BannerAd? _footerBannerAd;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    final AdState adState = Provider.of<AdState>(context);
-    adState.initialization.then(
-      (InitializationStatus status) => () {
-        super.setState(
-          () {
-            // Loads header banner ad
-            this._headerBannerAd = BannerAd(
-              size: AdSize.banner,
-              adUnitId: AdUnitId.banner,
-              listener: BannerAdListener(),
-              request: AdRequest(),
-            )..load();
-
-            // Loads footer banner ad
-            this._footerBannerAd = BannerAd(
-              size: AdSize.banner,
-              adUnitId: AdUnitId.banner,
-              listener: BannerAdListener(),
-              request: AdRequest(),
-            )..load();
-          },
-        );
-      },
-    );
   }
 
   @override
   void dispose() {
-    this._headerBannerAd?.dispose();
-    this._footerBannerAd?.dispose();
     super.dispose();
   }
 
@@ -78,38 +48,33 @@ class _State extends State<FavoritedTaskListView> {
           title: Text(_Text.APP_BAR_TITLE),
         ),
         body: Container(
-          child: Column(
-            children: <Widget>[
-              AdmobUtils.getBannerAdOrSizedBox(this._headerBannerAd),
-              Expanded(
-                child: FutureBuilder(
-                  future: this
-                      ._taskService
-                      .findFavoritedAndNotCompletedAndNotDeleted(),
-                  builder: (context, AsyncSnapshot snapshot) {
-                    if (!snapshot.hasData) {
-                      return Center(child: CircularProgressIndicator());
-                    }
+          child: FutureBuilder(
+            future:
+                this._taskService.findFavoritedAndNotCompletedAndNotDeleted(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-                    return ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return this
-                              ._buildTaskCard(context, snapshot.data[index]);
-                        });
-                  },
-                ),
-              ),
-              AdmobUtils.getBannerAdOrSizedBox(this._footerBannerAd),
-            ],
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return this
+                      ._buildTaskCard(context, index, snapshot.data[index]);
+                },
+              );
+            },
           ),
         ),
       );
 
-  Card _buildTaskCard(BuildContext context, Task task) => Card(
+  Card _buildTaskCard(BuildContext context, int index, Task task) => Card(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
+            if (index % 1 == 0)
+              AdmobUtils.createBannerAdWidget(AdmobUtils.loadBannerAd()),
+            if (index % 1 == 0) Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[

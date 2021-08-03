@@ -4,16 +4,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mytodo/src/admob/ad_unit_id.dart';
 
 class AdmobUtils {
-  static Widget getBannerAdOrSizedBox(BannerAd? bannerAd) {
-    if (bannerAd == null) {
-      return CircularProgressIndicator();
-    }
+  static Widget createBannerAdWidget(BannerAd bannerAd) => Container(
+        height: 50,
+        child: AdWidget(ad: bannerAd),
+      );
 
-    return Container(
-      height: 50,
-      child: AdWidget(ad: bannerAd),
-    );
-  }
+  static BannerAd loadBannerAd() => BannerAd(
+        size: AdSize.banner,
+        adUnitId: AdUnitId.banner,
+        listener: BannerAdListener(),
+        request: AdRequest(),
+      )..load();
 }

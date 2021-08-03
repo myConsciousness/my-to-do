@@ -54,35 +54,42 @@ class TaskService extends TaskRepository {
   @override
   Future<List<Task>> findNotCompletedAndNotDeleted() async =>
       await super.database.then((Database v) => v
-              .query(table, where: "COMPLETED = ? AND DELETED = ?", whereArgs: [
-            BooleanText.FALSE,
-            BooleanText.FALSE,
-          ]).then((List<Map<String, Object?>> v) => v
-                  .map((Map<String, Object?> e) =>
-                      e.isNotEmpty ? Task.fromMap(e) : Task.empty())
-                  .toList()));
+          .query(table,
+              where: "COMPLETED = ? AND DELETED = ?",
+              whereArgs: [
+                BooleanText.FALSE,
+                BooleanText.FALSE,
+              ],
+              orderBy: 'CREATED_AT DESC')
+          .then((List<Map<String, Object?>> v) => v
+              .map((Map<String, Object?> e) =>
+                  e.isNotEmpty ? Task.fromMap(e) : Task.empty())
+              .toList()));
 
   @override
   Future<List<Task>> findFavoritedAndNotCompletedAndNotDeleted() async =>
-      await super.database.then((Database v) => v.query(table,
+      await super.database.then((Database v) => v
+          .query(table,
               where: "FAVORITED = ? AND COMPLETED = ? AND DELETED = ?",
               whereArgs: [
                 BooleanText.TRUE,
                 BooleanText.FALSE,
                 BooleanText.FALSE
-              ]).then((List<Map<String, Object?>> v) => v
+              ],
+              orderBy: 'CREATED_AT DESC')
+          .then((List<Map<String, Object?>> v) => v
               .map((Map<String, Object?> e) =>
                   e.isNotEmpty ? Task.fromMap(e) : Task.empty())
               .toList()));
 
   @override
   Future<List<Task>> findCompletedOrDeleted() async =>
-      await super.database.then((Database v) => v.query(table,
+      await super.database.then((Database v) => v
+          .query(table,
               where: "COMPLETED = ? OR DELETED = ?",
-              whereArgs: [
-                BooleanText.TRUE,
-                BooleanText.TRUE
-              ]).then((List<Map<String, Object?>> v) => v
+              whereArgs: [BooleanText.TRUE, BooleanText.TRUE],
+              orderBy: 'CREATED_AT DESC')
+          .then((List<Map<String, Object?>> v) => v
               .map((Map<String, Object?> e) =>
                   e.isNotEmpty ? Task.fromMap(e) : Task.empty())
               .toList()));
