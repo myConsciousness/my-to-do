@@ -37,10 +37,16 @@ dependencies:
   textfield_tags: ^1.4.0
   google_mobile_ads: ^0.13.2
   provider: ^5.0.0
+  flutter_launcher_icons: ^0.9.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/android-chrome-512x512.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
