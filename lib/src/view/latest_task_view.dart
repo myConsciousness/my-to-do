@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
@@ -32,6 +33,8 @@ class _State extends State<LatestTaskListView> {
 
   final DateFormat _datetimeFormat = DateFormat('yyyy/MM/dd HH:mm');
 
+  final List<BannerAd> _bannerAds = <BannerAd>[];
+
   @override
   void initState() {
     super.initState();
@@ -44,6 +47,10 @@ class _State extends State<LatestTaskListView> {
 
   @override
   void dispose() {
+    for (BannerAd bannerAd in this._bannerAds) {
+      bannerAd.dispose();
+    }
+
     super.dispose();
   }
 
@@ -88,7 +95,7 @@ class _State extends State<LatestTaskListView> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (index % 1 == 0)
-              AdmobUtils.createBannerAdWidget(AdmobUtils.loadBannerAd()),
+              AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
             if (index % 1 == 0) Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,6 +223,12 @@ class _State extends State<LatestTaskListView> {
           ],
         ),
       );
+
+  BannerAd _loadBannerAd() {
+    final BannerAd bannerAd = AdmobUtils.loadBannerAd();
+    this._bannerAds.add(bannerAd);
+    return bannerAd;
+  }
 
   IconData _getPriorityIcon(Priority? priority) =>
       priority == Priority.LOW ? Icons.low_priority : Icons.priority_high;

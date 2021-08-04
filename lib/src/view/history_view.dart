@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
 import 'package:mytodo/src/repository/service/task_service.dart';
@@ -20,6 +21,8 @@ class _Text {
 }
 
 class _State extends State<HistoryView> {
+  final List<BannerAd> _bannerAds = <BannerAd>[];
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +35,10 @@ class _State extends State<HistoryView> {
 
   @override
   void dispose() {
+    for (BannerAd bannerAd in this._bannerAds) {
+      bannerAd.dispose();
+    }
+
     super.dispose();
   }
 
@@ -65,7 +72,7 @@ class _State extends State<HistoryView> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (index % 1 == 0)
-              AdmobUtils.createBannerAdWidget(AdmobUtils.loadBannerAd()),
+              AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
             if (index % 1 == 0) Divider(),
             ListTile(
               leading: Icon(this._getHistoryIcon(task)),
@@ -130,6 +137,12 @@ class _State extends State<HistoryView> {
           ],
         ),
       );
+
+  BannerAd _loadBannerAd() {
+    final BannerAd bannerAd = AdmobUtils.loadBannerAd();
+    this._bannerAds.add(bannerAd);
+    return bannerAd;
+  }
 
   IconData _getHistoryIcon(Task task) =>
       task.completed ? Icons.done : Icons.delete;
