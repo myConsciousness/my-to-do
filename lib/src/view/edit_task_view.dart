@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
-import 'package:mytodo/src/admob/ad_unit_id.dart';
 import 'package:mytodo/src/admob/admob_utils.dart';
 import 'package:mytodo/src/config/priority.dart';
 import 'package:mytodo/src/repository/model/task_model.dart';
@@ -26,12 +25,6 @@ class EditTaskView extends StatefulWidget {
   }
 }
 
-class _Text {
-  static const String APP_BAR_TITLE = 'Edit Task';
-
-  static const String ACTION_TOOLTIP_DONE = 'Done';
-}
-
 class _State extends State<EditTaskView> {
   /// The task to be edited
   final Task _task;
@@ -39,16 +32,16 @@ class _State extends State<EditTaskView> {
   _State(Task task) : this._task = task;
 
   /// The max length of task name
-  static const int _MAX_LENGTH_TASK_NAME = 20;
+  static const int _maxLengthTaskName = 20;
 
   /// The max length of remarks
-  static const int _MAX_LENGTH_REMARKS = 100;
+  static const int _maxLengthRemarks = 100;
 
   /// The max length of tag
-  static const int _MAX_LENGTH_TAG = 7;
+  static const int _maxLengthTag = 7;
 
   /// The max tag counts
-  static const int _MAX_TAGS = 2;
+  static const int _maxTagCount = 2;
 
   final DateTime _now = DateTime.now();
   final DateFormat _dateFormat = new DateFormat('yyyy/MM/dd');
@@ -104,12 +97,7 @@ class _State extends State<EditTaskView> {
           ),
         );
 
-    this._headerBannerAd = BannerAd(
-      size: AdSize.banner,
-      adUnitId: AdUnitId.banner,
-      listener: BannerAdListener(),
-      request: AdRequest(),
-    )..load();
+    this._headerBannerAd = AdmobUtils.loadBannerAd();
   }
 
   @override
@@ -121,10 +109,10 @@ class _State extends State<EditTaskView> {
   @override
   Widget build(BuildContext context) => Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(title: Text(_Text.APP_BAR_TITLE), actions: <Widget>[
+        appBar: AppBar(title: Text('Edit Task'), actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.check),
-            tooltip: _Text.ACTION_TOOLTIP_DONE,
+            tooltip: 'Done',
             onPressed: () {
               if (this._taskNameController.text == '') {
                 this._showInputErrorDialog('Task Name');
@@ -168,26 +156,26 @@ class _State extends State<EditTaskView> {
                     fontWeight: FontWeight.bold,
                   )),
               TextField(
-                maxLength: _MAX_LENGTH_TASK_NAME,
+                maxLength: _maxLengthTaskName,
                 controller: this._taskNameController,
                 decoration: InputDecoration(
                   icon: Icon(Icons.task),
                   labelText: 'Task Name',
                   hintText: 'New task name',
                   counterText:
-                      '${_MAX_LENGTH_TASK_NAME - this._taskNameController.text.length} / $_MAX_LENGTH_TASK_NAME',
+                      '${_maxLengthTaskName - this._taskNameController.text.length} / $_maxLengthTaskName',
                 ),
               ),
               SizedBox(height: 2),
               TextField(
-                maxLength: _MAX_LENGTH_REMARKS,
+                maxLength: _maxLengthRemarks,
                 controller: this._remarksController,
                 decoration: InputDecoration(
                   icon: Icon(Icons.note),
                   labelText: 'Remarks',
                   hintText: 'About task',
                   counterText:
-                      '${_MAX_LENGTH_REMARKS - this._remarksController.text.length} / $_MAX_LENGTH_REMARKS',
+                      '${_maxLengthRemarks - this._remarksController.text.length} / $_maxLengthRemarks',
                 ),
               ),
               SizedBox(height: 15),
@@ -207,12 +195,12 @@ class _State extends State<EditTaskView> {
                       icon: Icon(Icons.tag)),
                   tagsStyler: TagsStyler(),
                   validator: (String? tag) {
-                    if (tag!.length > _MAX_LENGTH_TAG) {
-                      return 'The tag must less than $_MAX_LENGTH_TAG characters';
+                    if (tag!.length > _maxLengthTag) {
+                      return 'The tag must less than $_maxLengthTag characters';
                     }
 
-                    if (this._tags.length >= _MAX_TAGS) {
-                      return 'The tag count must less than $_MAX_TAGS';
+                    if (this._tags.length >= _maxTagCount) {
+                      return 'The tag count must less than $_maxTagCount';
                     }
                   },
                   onTag: (String tag) {

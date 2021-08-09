@@ -5,27 +5,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mytodo/src/admob/ad_state.dart';
 import 'package:mytodo/src/config/application_text.dart';
 import 'package:mytodo/src/view/favorited_task_view.dart';
 import 'package:mytodo/src/view/history_view.dart';
 import 'package:mytodo/src/view/latest_task_view.dart';
-import 'package:provider/provider.dart';
 
 import 'src/l10n/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final Future<InitializationStatus> initStatus =
-      MobileAds.instance.initialize();
-  final AdState adState = AdState.from(initialization: initStatus);
+  MobileAds.instance.initialize();
 
-  runApp(
-    Provider.value(
-      value: adState,
-      builder: (context, child) => MyToDo(),
-    ),
-  );
+  runApp(MyToDo());
 }
 
 class MyToDo extends StatefulWidget {

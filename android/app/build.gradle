@@ -24,7 +24,6 @@ if (flutterVersionName == null) {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-apply plugin: 'com.google.gms.google-services'
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('app/key.properties')
@@ -44,8 +43,8 @@ android {
         applicationId "org.thinkit.mytodo"
         minSdkVersion 19
         targetSdkVersion 31
-        versionCode 9
-        versionName '1.0.0'
+        versionCode 10
+        versionName '1.0.1'
         multiDexEnabled true
     }
 

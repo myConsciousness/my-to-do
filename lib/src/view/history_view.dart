@@ -16,10 +16,6 @@ class HistoryView extends StatefulWidget {
   }
 }
 
-class _Text {
-  static const String APP_BAR_TITLE = 'History';
-}
-
 class _State extends State<HistoryView> {
   final List<BannerAd> _bannerAds = <BannerAd>[];
 
@@ -45,7 +41,7 @@ class _State extends State<HistoryView> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(_Text.APP_BAR_TITLE),
+          title: Text('History'),
         ),
         body: Container(
           child: FutureBuilder(
@@ -58,6 +54,16 @@ class _State extends State<HistoryView> {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
+                  if (index != 0 && index % 2 == 0) {
+                    return Column(
+                      children: [
+                        AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
+                        this._buildTaskCard(
+                            context, index, snapshot.data[index])
+                      ],
+                    );
+                  }
+
                   return this
                       ._buildTaskCard(context, index, snapshot.data[index]);
                 },
@@ -71,9 +77,6 @@ class _State extends State<HistoryView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if (index % 1 == 0)
-              AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
-            if (index % 1 == 0) Divider(),
             ListTile(
               leading: Icon(this._getHistoryIcon(task)),
               title: Text(task.name),
@@ -105,16 +108,16 @@ class _State extends State<HistoryView> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text("Delete Task"),
+                          title: Text('Delete Task'),
                           content: Text(
-                              "Delete this task data. Once the data is deleted, it cannot be restored. Are you sure you want to delete?"),
+                              'Delete this task data. Once the data is deleted, it cannot be restored. Are you sure you want to delete?'),
                           actions: <Widget>[
                             TextButton(
-                              child: Text("Cancel"),
+                              child: Text('Cancel'),
                               onPressed: () => Navigator.pop(context),
                             ),
                             TextButton(
-                              child: Text("OK"),
+                              child: Text('OK'),
                               onPressed: () {
                                 super.setState(() {
                                   TaskService.getInstance().delete(task);

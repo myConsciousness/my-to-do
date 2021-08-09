@@ -12,14 +12,17 @@ class InfoSnackbar {
   InfoSnackbar.from(BuildContext context) : this._context = context;
 
   void show({Key? key, String content = ''}) {
-    ScaffoldMessenger.of(this._context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(this._context).showSnackBar(
+      SnackBar(
         behavior: SnackBarBehavior.floating,
         content: Row(
           children: <Widget>[
             Icon(Icons.info, color: Colors.blue.shade400),
             SizedBox(width: 10),
-            Text(content)
+            Text(content),
           ],
-        )));
+        ),
+      ),
+    );
   }
 }

@@ -19,10 +19,6 @@ class FavoritedTaskListView extends StatefulWidget {
   }
 }
 
-class _Text {
-  static const String APP_BAR_TITLE = 'Favorite Task';
-}
-
 class _State extends State<FavoritedTaskListView> {
   final TaskService _taskService = TaskService.getInstance();
 
@@ -52,7 +48,7 @@ class _State extends State<FavoritedTaskListView> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(_Text.APP_BAR_TITLE),
+          title: Text('Favorite Task'),
         ),
         body: Container(
           child: FutureBuilder(
@@ -66,6 +62,16 @@ class _State extends State<FavoritedTaskListView> {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
+                  if (index != 0 && index % 2 == 0) {
+                    return Column(
+                      children: [
+                        AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
+                        this._buildTaskCard(
+                            context, index, snapshot.data[index])
+                      ],
+                    );
+                  }
+
                   return this
                       ._buildTaskCard(context, index, snapshot.data[index]);
                 },
@@ -79,9 +85,6 @@ class _State extends State<FavoritedTaskListView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if (index % 1 == 0)
-              AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
-            if (index % 1 == 0) Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[

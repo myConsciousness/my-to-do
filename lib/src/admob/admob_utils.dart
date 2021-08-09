@@ -14,7 +14,7 @@ class AdmobUtils {
 
   static BannerAd loadBannerAd() => BannerAd(
         size: AdSize.banner,
-        adUnitId: AdUnitId.banner,
+        adUnitId: MyToDoAdmobUnitIDs.getInstance().banner,
         listener: BannerAdListener(),
         request: AdRequest(),
       )..load();

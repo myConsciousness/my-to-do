@@ -20,14 +20,6 @@ class LatestTaskListView extends StatefulWidget {
   }
 }
 
-class _Text {
-  /// The app bar title
-  static const String APP_BAR_TITLE = 'Task';
-
-  /// The tooltip message of new task
-  static const String ACTION_TOOLTIP_NEW_TASK = 'New Task';
-}
-
 class _State extends State<LatestTaskListView> {
   final TaskService _taskService = TaskService.getInstance();
 
@@ -57,11 +49,11 @@ class _State extends State<LatestTaskListView> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(_Text.APP_BAR_TITLE),
+          title: Text('Task'),
           actions: <Widget>[
             IconButton(
               icon: const Icon(Icons.add),
-              tooltip: _Text.ACTION_TOOLTIP_NEW_TASK,
+              tooltip: 'New Task',
               onPressed: () {
                 Navigator.push(context,
                         MaterialPageRoute(builder: (_) => AddNewTaskView()))
@@ -81,6 +73,16 @@ class _State extends State<LatestTaskListView> {
               return ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
+                  if (index != 0 && index % 2 == 0) {
+                    return Column(
+                      children: [
+                        AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
+                        this._buildTaskCard(
+                            context, index, snapshot.data[index])
+                      ],
+                    );
+                  }
+
                   return this
                       ._buildTaskCard(context, index, snapshot.data[index]);
                 },
@@ -94,9 +96,6 @@ class _State extends State<LatestTaskListView> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if (index % 1 == 0)
-              AdmobUtils.createBannerAdWidget(this._loadBannerAd()),
-            if (index % 1 == 0) Divider(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
